@@ -1791,7 +1791,7 @@ do_lan_eth0_rpi_settings() {
 
 do_first_time_boot_menu() {
 while true; do
-  FUN=$(whiptail --title "Raspberry Pi TOrrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
+  FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
     "F1 Swap File" "Make Swap File 2.0Gb Size" \
     "F2 Expand Filesystem" "Ensures that all of the SD card storage is available to the OS" \
     "F3 Change User Password" "Change password for the current user" \
