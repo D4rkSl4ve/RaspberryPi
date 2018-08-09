@@ -1644,7 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo -e '\nFirst boot initialization for torrent box installation\n && date' >> /var/log/rpi-config_install.log &&
+  echo -e '\nFirst boot initialization for torrent box installation\n'`date` >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
       "F1 Swap File" "Make Swap File 2.0Gb Size" \
@@ -1660,13 +1660,13 @@ do_first_time_boot_menu() {
         do_raspi_config_menu
       elif [ $RET -eq 0 ]; then
         case "$FUN" in
-          F1\ *) echo -e "\nSwap File activate" && date >> /var/log/rpi-config_install.log && do_swap_change ;;
-          F2\ *) echo -e "\nExpand Filesystem activate" && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
-          F3\ *) echo -e '\nChange User Password activate' && date >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
-          F4\ *) echo -e '\nLAN Settings activate' && date >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
-          F5\ *) echo -e '\nWi-fi Setup activate' && date >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
-          F6\ *) echo -e '\nLocalisation Options activate' && date >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
-          F9\ *) echo -e '\nFirst reboot activate' && date >> /var/log/rpi-config_install.log && do_reboot ;;
+          F1\ *) echo -e '\nSwap File activate\n'`date` >> /var/log/rpi-config_install.log && do_swap_change ;;
+          F2\ *) echo -e '\nExpand Filesystem activate\n'`date` >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
+          F3\ *) echo -e '\nChange User Password activate\n'`date` >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
+          F4\ *) echo -e '\nLAN Settings activate\n'`date` >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
+          F5\ *) echo -e '\nWi-fi Setup activate\n'`date` >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
+          F6\ *) echo -e '\nLocalisation Options activate\n'`date` >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
+          F9\ *) echo -e '\nFirst reboot activate\n'`date` >> /var/log/rpi-config_install.log && do_reboot ;;
           *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
     else
@@ -1826,7 +1826,7 @@ do_raspi_config_menu() {
 }
 
 do_torbox_requirement_packages() {
-  echo -e '\nInstallation of required packages, create folders, and install log file' && date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
   echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
   echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
@@ -1870,7 +1870,7 @@ do_torbox_requirement_packages() {
 }
 
 do_torbox_directories() {
-  echo -e '\nCreating directoies for Downloads, Music, Videos, Temp' && date >> /var/log/rpi-config_install.log &&
+  echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
   cd ~
   do_with_root mkdir -m777 Downloads
@@ -1880,7 +1880,7 @@ do_torbox_directories() {
 }
 
 do_torbox_programs() {
-  echo -e '\nInstallation of torrent box programs' && date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of torrent box programs \e[0m\n" &&
   cd ~
 
@@ -2098,7 +2098,7 @@ EOF
 }
 
 do_torbox_maintenance_programs() {
-  echo -e '\nInstallation of maintenance utility programs' && date>> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of maintenance utility programs\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of maintenance utility programs \e[0m\n" &&
 
   # Midnight Commander
