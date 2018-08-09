@@ -1902,7 +1902,7 @@ do_torbox_programs() {
   echo "Creating service for:  Deluge" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
   cd /home/pi
-cat > deluge.service << EOF
+  cat > deluge.service << EOF
 [Unit]
   Description=Deluge Bittorrent Client Daemon
   After=network-online.target
@@ -2182,7 +2182,7 @@ do_internationalisation_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_interface_menu() {
@@ -2212,7 +2212,7 @@ do_interface_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_advanced_menu() {
@@ -2240,7 +2240,7 @@ do_advanced_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_boot_menu() {
@@ -2267,7 +2267,7 @@ do_boot_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_network_menu() {
@@ -2287,7 +2287,7 @@ do_network_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 # RPi TorBox Interactive use loop
@@ -2305,7 +2305,7 @@ if [ "$INTERACTIVE" = True ]; then
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
         "6 Step" "Description" \
-        "7 Update" "Repository Update and Upgade" \
+        "7 Update\Upgrade" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
         "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
         3>&1 1>&2 2>&3)
