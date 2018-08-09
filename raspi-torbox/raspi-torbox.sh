@@ -1644,7 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo -e '\nFirst boot initialization for torrent box installation' && date >> /var/log/rpi-config_install.log &&
+  echo -e "\nFirst boot initialization for torrent box installation" && date >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
       "F1 Swap File" "Make Swap File 2.0Gb Size" \
@@ -1660,8 +1660,8 @@ do_first_time_boot_menu() {
         do_raspi_config_menu
       elif [ $RET -eq 0 ]; then
         case "$FUN" in
-          F1\ *) echo -e '\nSwap File activate' && date >> /var/log/rpi-config_install.log && do_swap_change ;;
-          F2\ *) echo -e '\nExpand Filesystem activate' && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
+          F1\ *) echo -e "\nSwap File activate" && date >> /var/log/rpi-config_install.log && do_swap_change ;;
+          F2\ *) echo -e "\nExpand Filesystem activate" && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
           F3\ *) echo -e '\nChange User Password activate' && date >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
           F4\ *) echo -e '\nLAN Settings activate' && date >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
           F5\ *) echo -e '\nWi-fi Setup activate' && date >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
