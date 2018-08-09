@@ -1642,8 +1642,10 @@ nonint() {
 #
 
 do_first_time_boot_menu() {
+  echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
+  echo -e '`date`\nCreating install log file at /var/log/rpi-config_install.log' >> /var/log/rpi-config_install.log &&
   echo -e '\nFirst boot initialization for torrent box installation\n'`date` >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
@@ -1826,42 +1828,40 @@ do_raspi_config_menu() {
 }
 
 do_torbox_requirement_packages() {
-  echo -e '\nInstallation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
-  echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
-  echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
+  echo -e '\nDownload and installation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m> Download and installation of required packages, create folders, and install log file \e[0m\n" &&
   cd ~
 
   # git
-  echo -e '\nInstalling package:  git' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
+  echo -e '\nDownloading and installing package:  git' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo -e '\nInstalling package:  dirmngr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  dirmngr \e[0m"
+  echo -e '\nDownloading and installing package:  dirmngr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
-  echo -e '\nInstalling package:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Requesting package installation:\e[0;92m  mono-devel \e[0m" &&
+  echo -e '\nDownloading and installing:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Requesting package key:\e[0;92m  mono-devel \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  mono-devel \e[0m" &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-devel \e[0m" &&
   do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  mono-complete \e[0m" &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-complete \e[0m" &&
   do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
-  echo -e '\nInstalling package:  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
+  echo -e '\nDownloading and installing package:  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo -e '\nInstalling package:  mediainfo' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing package:\e[0;92m  mediainfo \e[0m" &&
+  echo -e '\nDownloading and installing package:  mediainfo' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update/Upgrade Required \e[0m" &&
   do_with_root apt-get upgrade -y >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1880,19 +1880,19 @@ do_torbox_directories() {
 }
 
 do_torbox_programs() {
-  echo -e '\nInstallation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Installation of torrent box programs \e[0m\n" &&
+  echo -e '\nDownload and installation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m> Download and installation of torrent box programs \e[0m\n" &&
   cd ~
 
   # OpenVPN:  program
   cd ~
-  echo -e '\nInstalling program:  OpenVPN' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  OpenVPN \e[0m" &&
+  echo -e '\nDownloading and installing program:  OpenVPN' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  OpenVPN \e[0m" &&
   do_with_root apt-get install openvpn -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Deluge:  program
-  echo -e '\nInstalling program:  Deluge' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Deluge \e[0m" &&
+  echo -e '\nDownloading and installing program:  Deluge' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Deluge \e[0m" &&
   do_with_root touch /var/log/deluged.log >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root touch /var/log/deluge-web.log >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown pi:pi /var/log/deluge* >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1953,8 +1953,8 @@ EOF
   do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Jackett:  program
-  echo -e '\nInstalling program:  Jackett' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Jackett \e[0m" &&
+  echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
   cd ~/Downloads
   do_with_root wget https://github.com/Jackett/Jackett/releases/download/v0.8.898/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1988,13 +1988,14 @@ EOF
   do_with_root systemctl start jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Sonarr:  program
-  echo -e '\nInstalling program:  Sonarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Sonarr \e[0m" &&
+  echo -e '\nDownloading and installing program:  Sonarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Requesting package key:\e[0;92m  Sonarr \e[0m" &&
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FDA5DFFC >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/sonarr.list >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e '\nPackage(s) Update Required'  >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Sonarr \e[0m" &&
   do_with_root apt-get install nzbdrone -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/NzbDrone >> /var/log/rpi-config_install.log 2>&1 &&
 
@@ -2027,16 +2028,16 @@ EOF
   do_with_root systemctl start sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Radarr:  program
-  echo -e '\nInstalling program:  Radarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Radarr \e[0m" &&
+  echo -e '\nDownloading and installing program:  Radarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Radarr \e[0m" &&
   cd ~/Downloads
   do_with_root curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 ) >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Radarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/Radarr >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Radarr:  service
-  echo -e '\nInstalling program:  Radarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Radarr \e[0m" &&
+  echo -e '\nCreating service for:  Radarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Radarr \e[0m" &&
   cat > radarr.service << EOF
   [Unit]
   Description=Radarr Daemon
@@ -2062,16 +2063,16 @@ EOF
   do_with_root systemctl start radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Lidarr:  program
-  echo -e '\nInstalling program:  Lidarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Lidarr \e[0m" &&
+  echo -e '\nDownloading and installing program:  Lidarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Lidarr \e[0m" &&
   cd ~/Downloads
   do_with_root wget https://github.com/lidarr/Lidarr/releases/download/v0.3.1.471/Lidarr.develop.0.3.1.471.linux.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Lidarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/Lidarr >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Lidarr:  service
-  echo -e '\nInstalling program:  Lidarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Lidarr \e[0m" &&
+  echo -e '\nCreating service for:  Lidarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Lidarr \e[0m" &&
   cat > lidarr.service << EOF
   [Unit]
   Description=Lidarr Daemon
@@ -2098,18 +2099,18 @@ EOF
 }
 
 do_torbox_maintenance_programs() {
-  echo -e '\nInstallation of maintenance utility programs\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Installation of maintenance utility programs \e[0m\n" &&
+  echo -e '\nDownload and Installation of maintenance utility programs\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m> Download and Installation of maintenance utility programs \e[0m\n" &&
 
   # Midnight Commander
   cd ~
-  echo -e '\nInstalling program:  Midnight Commander' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Midnight Commander \e[0m" &&
+  echo -e '\nDownloading and installing program:  Midnight Commander' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Midnight Commander \e[0m" &&
   do_with_root apt-get install mc -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Speedtest
-  echo -e '\nInstalling program:  Speedtest' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Speedtest \e[0m" &&
+  echo -e '\nDownloading and installing program:  Speedtest' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Speedtest \e[0m" &&
   cd /usr/local/bin
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root easy_install speedtest-cli -y >> /var/log/rpi-config_install.log 2>&1
