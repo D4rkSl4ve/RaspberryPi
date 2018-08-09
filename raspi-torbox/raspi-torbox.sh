@@ -2307,7 +2307,8 @@ if [ "$INTERACTIVE" = True ]; then
         "6 Step" "Description" \
         "7 Update" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
-        "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \3>&1 1>&2 2>&3)
+        "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
+        3>&1 1>&2 2>&3)
     else
       FUN=$(whiptail --title "Raspberry Pi Software Configuration Tool (raspi-config)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 Change User Password" "Change password for the current user" \
