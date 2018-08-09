@@ -1644,7 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo -e 'First boot initialization for torrent box installation' && date >> /var/log/rpi-config_install.log &&
+  echo -e '\nFirst boot initialization for torrent box installation' && date >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
       "F1 Swap File" "Make Swap File 2.0Gb Size" \
