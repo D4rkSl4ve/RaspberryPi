@@ -2107,7 +2107,6 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_programs_preassgined_settings() {
-
 }
 
 # END of RPi Torrent Box functions
