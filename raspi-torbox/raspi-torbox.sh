@@ -1719,15 +1719,15 @@ do_lan_eth0_rpi_settings() {
   # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
   if [ $? -eq 0 ]; then
     echo $NEW_HOSTNAME > /etc/hostname
-    sed -i 's/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g' /etc/hosts
+    sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g" /etc/hosts
     echo '# Static IP Configuration by RPiTorBox' >> /etc/dhcpcd.conf
     echo interface eth0 >> /etc/dhcpcd.conf
     echo static ip_address=$NEW_STATICIP/24 >> /etc/dhcpcd.conf
     echo '#static ip6_address=fd51:42f8:caae:d92e::ff/64' >> /etc/dhcpcd.conf
     echo static routers=$NEW_ROUTER >> /etc/dhcpcd.conf
     echo static domain_name_servers=$NEW_ROUTER 8.8.8.8 fd51:42f8:caae:d92e::1 >> /etc/dhcpcd.conf
-    sed -i 's/#   Port 22/   Port $NEW_SSH/' /etc/ssh/ssh_config
-    sed -i 's/#Port 22/Port $NEW_SSH/' /etc/ssh/sshd_config
+    sed -i "s/#   Port 22/   Port $NEW_SSH/" /etc/ssh/ssh_config
+    sed -i "s/#Port 22/Port $NEW_SSH/" /etc/ssh/sshd_config
     ASK_TO_REBOOT=1
   fi
 }
