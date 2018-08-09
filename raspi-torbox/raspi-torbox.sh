@@ -2106,8 +2106,6 @@ do_torbox_maintenance_programs() {
   cd ~
 }
 
-do_torbox_programs_preassgined_settings() {
-}
 
 # Command line options for non-interactive use
 
