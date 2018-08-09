@@ -1644,7 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo && echo 'First boot initialization for torrent box installation' >> /var/log/rpi-config_install.log &&
+  echo "" && echo 'First boot initialization for torrent box installation' >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
@@ -1677,7 +1677,7 @@ do_first_time_boot_menu() {
 }
 
 do_swap_change() {
-  echo && echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
   do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1725,7 +1725,7 @@ do_lan_eth0_rpi_settings() {
   # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
   if [ $? -eq 0 ]; then
 
-    echo && echo "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" >> /var/log/rpi-config_install.log &&
+    echo "" && echo "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" >> /var/log/rpi-config_install.log &&
     date >> /var/log/rpi-config_install.log &&
     echo -e "\e[1;96m>  LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port \n\e[0m" &&
     echo $NEW_HOSTNAME > /etc/hostname
@@ -1834,7 +1834,7 @@ do_raspi_config_menu() {
 }
 
 do_torbox_requirement_packages() {
-  echo && echo "Installation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
   echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
@@ -1842,19 +1842,19 @@ do_torbox_requirement_packages() {
   cd ~
 
   # git
-  echo && echo "Installing package:  git" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installing package:  git" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo && echo "Installing package:  dirmngr" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installing package:  dirmngr" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
-  echo && echo "Installing package:  mono-devel and mono-complete" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installing package:  mono-devel and mono-complete" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Requesting package installation:\e[0;92m  mono-devel \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1867,13 +1867,13 @@ do_torbox_requirement_packages() {
   do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
-  echo && echo "Installing package:  libcurl4-openssl-dev" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installing package:  libcurl4-openssl-dev" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo && echo "Installing package:  mediainfo" >> /var/log/rpi-config_install.log &&
+  echo "" && echo "Installing package:  mediainfo" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
