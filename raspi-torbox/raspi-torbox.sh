@@ -1677,6 +1677,9 @@ do_swap_change() {
   do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile &&
   do_with_root dphys-swapfile setup &&
   do_with_root dphys-swapfile swapon &&
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "Swap size has been resized.\nThe swapfile will be enlarged upon the next reboot" 20 60 2
+  fi
   ASK_TO_REBOOT=1
 }
 
@@ -2304,8 +2307,7 @@ if [ "$INTERACTIVE" = True ]; then
         "6 Step" "Description" \
         "7 Update" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
-        "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
-        3>&1 1>&2 2>&3)
+        "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \3>&1 1>&2 2>&3)
     else
       FUN=$(whiptail --title "Raspberry Pi Software Configuration Tool (raspi-config)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 Change User Password" "Change password for the current user" \
