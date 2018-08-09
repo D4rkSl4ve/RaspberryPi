@@ -85,8 +85,8 @@ is_ssh() {
 }
 
 calc_wt_size() {
-  # NOTE: it's tempting to redirect stderr to /dev/null, so supress error 
-  # output from tput. However in this case, tput detects neither stdout or 
+  # NOTE: it's tempting to redirect stderr to /dev/null, so supress error
+  # output from tput. However in this case, tput detects neither stdout or
   # stderr is a tty and so only gives default 80, 24 values
   WT_HEIGHT=17
   WT_WIDTH=$(tput cols)
@@ -140,7 +140,7 @@ do_expand_rootfs() {
     return 0
   fi
 
-  # NOTE: the NOOBS partition layout confuses parted. For now, let's only 
+  # NOTE: the NOOBS partition layout confuses parted. For now, let's only
   # agree to work with a sufficiently simple partition layout
   if [ "$PART_NUM" -ne 2 ]; then
     whiptail --msgbox "Your partition layout is not currently supported by this tool. You are probably using NOOBS, in which case your root filesystem is already expanded anyway." 20 60 2
@@ -494,9 +494,9 @@ do_hostname() {
   if [ "$INTERACTIVE" = True ]; then
     whiptail --msgbox "\
 Please note: RFCs mandate that a hostname's labels \
-may contain only the ASCII letters 'a' through 'z' (case-insensitive), 
+may contain only the ASCII letters 'a' through 'z' (case-insensitive),
 the digits '0' through '9', and the hyphen.
-Hostname labels cannot begin or end with a hyphen. 
+Hostname labels cannot begin or end with a hyphen.
 No other symbols, punctuation characters, or blank spaces are permitted.\
 " 20 70 1
   fi
@@ -1578,7 +1578,7 @@ do_apply_os_config() {
     printf "Unrecognised flavour. Ignoring\n"
   fi
 
-  # TODO: currently ignores en_gb settings as we assume we are running in a 
+  # TODO: currently ignores en_gb settings as we assume we are running in a
   # first boot context, where UK English settings are default
   case "$NOOBSLANGUAGE" in
     "en")
@@ -1664,8 +1664,8 @@ do_reboot() {
 }
 
 do_swap_change() {
-  echo -e "\e[1;96m>  Increasing the SWAP file to 2GB for smoother performance \n\e[0m" &&
-  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=2048/' /etc/dphys-swapfile &&
+  echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
+  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile &&
   do_with_root dphys-swapfile setup &&
   do_with_root dphys-swapfile swapon &&
   ASK_TO_REBOOT=1
@@ -1838,7 +1838,7 @@ do_requirement_packages() {
   echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
   echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
   cd ~
-  
+
   # git
   echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
