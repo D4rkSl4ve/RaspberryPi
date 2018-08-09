@@ -2100,7 +2100,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
-}
+} #
 
 do_torbox_maintenance_programs() {
   echo "\nInstallation of maintenance utility programs" >> /var/log/rpi-config_install.log &&
