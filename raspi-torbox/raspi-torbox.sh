@@ -1351,15 +1351,6 @@ do_net_names () {
   fi
  }
 
-do_update() {
-  echo -e "\e[0;96m> Updating apt repositories...\e[0m"
-  apt-get -qq update &&
-  apt-get -qq install raspi-config -y &&
-  echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
-  sleep 5 &&
-  return 0
-}
-
 do_audio() {
   if [ "$INTERACTIVE" = True ]; then
     AUDIO_OUT=$(whiptail --menu "Choose the audio output" 20 60 10 \
@@ -1758,9 +1749,19 @@ do_exit() {
   exit 0
 }
 
+do_update() {
+  echo -e "\e[0;96m\n> Updating package(s) and apt repositories... \e[0m\n" &&
+  apt-get -qq update &&
+  # apt-get -qq install raspi-config -y &&
+  # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
+  sleep 5 &&
+  return 0
+}
+
 do_upgrade() {
+  echo -e "\e[0;96m\n> Upgrading package(s) and aplication(s)... \e[0m\n" &&
   do_with_root apt-get -qq upgrade -y &&
-  echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
+  # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
   sleep 5 &&
   return 0
 }
@@ -1829,7 +1830,7 @@ do_raspi_config_menu() {
 
 do_torbox_requirement_packages() {
   echo -e '\nDownload and installation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Download and installation of required packages, create folders, and install log file \e[0m\n" &&
+  echo -e "\e[0;93m\n> Download and installation of required packages, create folders, and install log file \e[0m\n" &&
   cd ~
 
   # git
@@ -1871,7 +1872,7 @@ do_torbox_requirement_packages() {
 
 do_torbox_directories() {
   echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
+  echo -e "\e[0;96m\n> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
   cd ~
   do_with_root mkdir -m777 Downloads
   do_with_root mkdir -m777 Music
@@ -1881,7 +1882,7 @@ do_torbox_directories() {
 
 do_torbox_programs() {
   echo -e '\nDownload and installation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Download and installation of torrent box programs \e[0m\n" &&
+  echo -e "\e[0;93m\n> Download and installation of torrent box programs \e[0m\n" &&
   cd ~
 
   # OpenVPN:  program
