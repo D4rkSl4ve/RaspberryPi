@@ -1647,9 +1647,9 @@ while true; do
     "F1 Swap File" "Make Swap File 2.0Gb Size" \
     "F2 Expand Filesystem" "Ensures that all of the SD card storage is available to the OS" \
     "F3 Change User Password" "Change password for the current user" \
-    "F4 Localisation Options" "Set up language and regional settings to match your location" \
-    "F5 LAN Settings 'eth0'" "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" \
-    "F6 Wi-fi" "Wi-fi SSID, Passphrase, and Country setting" \
+    "F4 LAN Settings 'eth0'" "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" \
+    "F5 Wi-fi" "Wi-fi SSID, Passphrase, and Country setting" \
+    "F6 Localisation Options" "Set up language and regional settings to match your location" \
     "F9 Reboot RPi" "Reboot RPi to take effect" \
     3>&1 1>&2 2>&3)
   RET=$?
@@ -1660,9 +1660,9 @@ while true; do
       F1\ *) do_swap_change ;;
       F2\ *) do_expand_rootfs ;;  # raspi-config
   	  F3\ *) do_change_pass ;;  # raspi-config
-	    F4\ *) do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
-	    F5\ *) do_lan_eth0_rpi_settings ;;
-	    F6\ *) do_wifi_ssid_passphrase && do_wifi_country;;  # raspi-config
+	    F4\ *) do_lan_eth0_rpi_settings ;;
+	    F5\ *) do_wifi_ssid_passphrase && do_wifi_country;;  # raspi-config
+      F6\ *) do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
 	    F9\ *) do_reboot ;;
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
