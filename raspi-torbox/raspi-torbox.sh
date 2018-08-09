@@ -1644,7 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo '\nFirst boot initialization for torrent box installation' >> /var/log/rpi-config_install.log &&
+  echo && echo 'First boot initialization for torrent box installation' >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
@@ -1677,7 +1677,7 @@ do_first_time_boot_menu() {
 }
 
 do_swap_change() {
-  echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
+  echo && echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
   do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1724,6 +1724,10 @@ do_lan_eth0_rpi_settings() {
   fi
   # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
   if [ $? -eq 0 ]; then
+
+    echo && echo "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" >> /var/log/rpi-config_install.log &&
+    date >> /var/log/rpi-config_install.log &&
+    echo -e "\e[1;96m>  LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port \n\e[0m" &&
     echo $NEW_HOSTNAME > /etc/hostname
     sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g" /etc/hosts
     echo '# Static IP Configuration by RPiTorBox' >> /etc/dhcpcd.conf
