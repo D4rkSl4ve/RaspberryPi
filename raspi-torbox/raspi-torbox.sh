@@ -1677,7 +1677,7 @@ do_first_time_boot_menu() {
 }
 
 do_swap_change() {
-  echo ( && echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
+  echo "\n" && echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
   do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
