@@ -1899,51 +1899,45 @@ do_torbox_programs() {
   echo "Creating service for:  Deluge" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
   cd /home/pi
-  cat > deluge.service << EOF
-  [Unit]
+cat > deluge.service << EOF
+[Unit]
   Description=Deluge Bittorrent Client Daemon
   After=network-online.target
 
-  [Service]
+[Service]
   Type=simple
   User=root
   Group=root
   UMask=000
-
   ExecStart=/usr/bin/deluged -d
-
   Restart=on-failure
-
-  # Configures the time to wait before service is stopped forcefully.
+# Configures the time to wait before service is stopped forcefully.
   TimeoutStopSec=300
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv deluge.service /lib/systemd/system/deluge.service
 
   echo "Creating service for:  Deluge-Web" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
   cd /home/pi
   cat > deluge-web.service << EOF
-  [Unit]
+[Unit]
   Description=Deluge Bittorrent Client Web Interface
   After=network-online.target
 
-  [Service]
+[Service]
   Type=simple
-
   User=pi
   Group=pi
   UMask=000
-
   ExecStart=/usr/bin/deluge-web
-
   Restart=on-failure
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv deluge-web.service /lib/systemd/system/deluge-web.service
 
   echo "Starting service:  Deluge + Deluge-Web" >> /var/log/rpi-config_install.log &&
@@ -1966,11 +1960,11 @@ do_torbox_programs() {
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
   cd /home/pi
   cat > jackett.service << EOF
-  [Unit]
+[Unit]
   Description=Jackett Daemon
   After=network.target
 
-  [Service]
+[Service]
   User=pi
   Restart=always
   RestartSec=5
@@ -1978,9 +1972,9 @@ do_torbox_programs() {
   ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe
   TimeoutStopSec=20
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv jackett.service /lib/systemd/system/jackett.service
 
   echo "Starting service:  Jackett" >> /var/log/rpi-config_install.log &&
@@ -2002,23 +1996,22 @@ do_torbox_programs() {
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
   cd /home/pi
   cat > sonarr.service << EOF
-  [Unit]
+[Unit]
   Description=Sonarr Daemon
   After=syslog.target network.target
 
-  [Service]
+[Service]
   User=pi
   Group=pi
-
   Type=simple
   ExecStart=/usr/bin/mono /opt/NzbDrone/NzbDrone.exe -nobrowser
   TimeoutStopSec=20
   KillMode=process
   Restart=on-failure
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv sonarr.service /lib/systemd/system/sonarr.service
 
   echo "Starting service:  Sonarr" >> /var/log/rpi-config_install.log &&
@@ -2038,23 +2031,22 @@ do_torbox_programs() {
   echo "Installing program:  Radarr" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Radarr \e[0m" &&
   cat > radarr.service << EOF
-  [Unit]
+[Unit]
   Description=Radarr Daemon
   After=syslog.target network.target
 
-  [Service]
+[Service]
   User=pi
   Group=pi
-
   Type=simple
   ExecStart=/usr/bin/mono /opt/Radarr/Radarr.exe -nobrowser
   TimeoutStopSec=20
   KillMode=process
   Restart=on-failure
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv radarr.service /lib/systemd/system/radarr.service
 
   echo "Starting service:  Radarr" >> /var/log/rpi-config_install.log &&
@@ -2074,11 +2066,11 @@ do_torbox_programs() {
   echo "Installing program:  Lidarr" >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Lidarr \e[0m" &&
   cat > lidarr.service << EOF
-  [Unit]
+[Unit]
   Description=Lidarr Daemon
   After=syslog.target network.target
 
-  [Service]
+[Service]
   User=pi
   Group=pi
   Type=simple
@@ -2087,9 +2079,9 @@ do_torbox_programs() {
   KillMode=process
   Restart=on-failure
 
-  [Install]
+[Install]
   WantedBy=multi-user.target
-  EOF
+EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
 
   echo "Starting service:  Lidarr" >> /var/log/rpi-config_install.log &&
