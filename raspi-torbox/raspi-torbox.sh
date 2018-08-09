@@ -1652,7 +1652,7 @@ do_first_time_boot_menu() {
       "F2 Expand Filesystem" "Ensures that all of the SD card storage is available to the OS" \
       "F3 Change User Password" "Change password for the current user" \
       "F4 LAN Settings 'eth0'" "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" \
-      "F5 Wi-fi" "Wi-fi SSID, Passphrase, and Country setting" \
+      "F5 Wi-fi Setup" "Wi-fi SSID, Passphrase, and Country setting" \
       "F6 Localisation Options" "Set up language and regional settings to match your location" \
       "F9 Reboot RPi" "Reboot RPi to take effect" \
       3>&1 1>&2 2>&3)
@@ -1661,13 +1661,13 @@ do_first_time_boot_menu() {
         do_raspi_config_menu
       elif [ $RET -eq 0 ]; then
         case "$FUN" in
-          F1\ *) do_swap_change ;;
-          F2\ *) do_expand_rootfs ;;  # raspi-config
-          F3\ *) do_change_pass ;;  # raspi-config
-          F4\ *) do_lan_eth0_rpi_settings ;;
-          F5\ *) do_wifi_ssid_passphrase && do_wifi_country;;  # raspi-config
-          F6\ *) do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
-          F9\ *) do_reboot ;;
+          F1\ *) echo 'Swap File activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_swap_change ;;
+          F2\ *) echo 'Expand Filesystem activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
+          F3\ *) echo 'Change User Password activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
+          F4\ *) echo 'LAN Settings activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
+          F5\ *) echo 'Wi-fi Setup activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
+          F6\ *) echo 'Localisation Options activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
+          F9\ *) echo 'First reboot activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_reboot ;;
           *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
     else
@@ -1677,10 +1677,12 @@ do_first_time_boot_menu() {
 }
 
 do_swap_change() {
+  echo "Increasing the SWAP file to 1GB for smoother performance" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
-  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile &&
-  do_with_root dphys-swapfile setup &&
-  do_with_root dphys-swapfile swapon &&
+  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root dphys-swapfile setup >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root dphys-swapfile swapon >> /var/log/rpi-config_install.log 2>&1 &&
   if [ "$INTERACTIVE" = True ]; then
     whiptail --msgbox "Swap size has been resized.\nThe swapfile will be enlarged upon the next reboot" 20 60 2
   fi
@@ -1828,7 +1830,7 @@ do_raspi_config_menu() {
 }
 
 do_torbox_requirement_packages() {
-  echo "\nInstallation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
   echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
   date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
@@ -1836,17 +1838,20 @@ do_torbox_requirement_packages() {
   cd ~
 
   # git
-  echo "\nInstalling package:  git" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installing package:  git" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo "\nInstalling package:  dirmngr" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installing package:  dirmngr" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
-  echo "\nInstalling package:  mono-devel and mono-complete" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installing package:  mono-devel and mono-complete" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Requesting package installation:\e[0;92m  mono-devel \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1858,12 +1863,14 @@ do_torbox_requirement_packages() {
   do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
-  echo "\nInstalling package:  libcurl4-openssl-dev" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installing package:  libcurl4-openssl-dev" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo "\nInstalling package:  mediainfo" >> /var/log/rpi-config_install.log &&
+  echo && echo "Installing package:  mediainfo" >> /var/log/rpi-config_install.log &&
+  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update/Upgrade Required \e[0m" &&
