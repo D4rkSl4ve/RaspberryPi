@@ -1644,8 +1644,7 @@ nonint() {
 do_first_time_boot_menu() {
   do_with_root touch /var/log/rpi-config_install.log
   do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo "" && echo 'First boot initialization for torrent box installation' >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e 'First boot initialization for torrent box installation' && date >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
       "F1 Swap File" "Make Swap File 2.0Gb Size" \
@@ -1661,13 +1660,13 @@ do_first_time_boot_menu() {
         do_raspi_config_menu
       elif [ $RET -eq 0 ]; then
         case "$FUN" in
-          F1\ *) echo 'Swap File activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_swap_change ;;
-          F2\ *) echo 'Expand Filesystem activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
-          F3\ *) echo 'Change User Password activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
-          F4\ *) echo 'LAN Settings activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
-          F5\ *) echo 'Wi-fi Setup activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
-          F6\ *) echo 'Localisation Options activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
-          F9\ *) echo 'First reboot activate' >> /var/log/rpi-config_install.log && date >> /var/log/rpi-config_install.log && do_reboot ;;
+          F1\ *) echo -e '\nSwap File activate' && date >> /var/log/rpi-config_install.log && do_swap_change ;;
+          F2\ *) echo -e '\nExpand Filesystem activate' && date >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
+          F3\ *) echo -e '\nChange User Password activate' && date >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
+          F4\ *) echo -e '\nLAN Settings activate' && date >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
+          F5\ *) echo -e '\nWi-fi Setup activate' && date >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
+          F6\ *) echo -e '\nLocalisation Options activate' && date >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
+          F9\ *) echo -e '\nFirst reboot activate' && date >> /var/log/rpi-config_install.log && do_reboot ;;
           *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
     else
@@ -1677,13 +1676,11 @@ do_first_time_boot_menu() {
 }
 
 do_swap_change() {
-  echo -e '\nIncreasing the SWAP file to 1GB for smoother performance' && date >> /var/log/rpi-config_install.log &&
-  echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
   do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root dphys-swapfile setup >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root dphys-swapfile swapon >> /var/log/rpi-config_install.log 2>&1 &&
   if [ "$INTERACTIVE" = True ]; then
-    whiptail --msgbox "Swap size has been resized.\nThe swapfile will be enlarged upon the next reboot" 20 60 2
+    whiptail --msgbox "SWAPFILE size has been resized to 1GB for smoother performance.\nThe swapfile will be enlarged upon the next reboot." 20 60 2
   fi
   ASK_TO_REBOOT=1
 }
@@ -1723,10 +1720,6 @@ do_lan_eth0_rpi_settings() {
   fi
   # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
   if [ $? -eq 0 ]; then
-
-    echo "" && echo "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" >> /var/log/rpi-config_install.log &&
-    date >> /var/log/rpi-config_install.log &&
-    echo -e "\e[1;96m>  LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port \n\e[0m" &&
     echo $NEW_HOSTNAME > /etc/hostname
     sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g" /etc/hosts
     echo '# Static IP Configuration by RPiTorBox' >> /etc/dhcpcd.conf
@@ -1833,28 +1826,24 @@ do_raspi_config_menu() {
 }
 
 do_torbox_requirement_packages() {
-  echo "" && echo "Installation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of required packages, create folders, and install log file' && date >> /var/log/rpi-config_install.log &&
   echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
   echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
   cd ~
 
   # git
-  echo "" && echo "Installing package:  git" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling package:  git' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo "" && echo "Installing package:  dirmngr" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling package:  dirmngr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
-  echo "" && echo "Installing package:  mono-devel and mono-complete" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling package:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Requesting package installation:\e[0;92m  mono-devel \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1866,14 +1855,12 @@ do_torbox_requirement_packages() {
   do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
-  echo "" && echo "Installing package:  libcurl4-openssl-dev" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling package:  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo "" && echo "Installing package:  mediainfo" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling package:  mediainfo' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing package:\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update/Upgrade Required \e[0m" &&
@@ -1883,8 +1870,7 @@ do_torbox_requirement_packages() {
 }
 
 do_torbox_directories() {
-  echo "\nCreating directoies for Downloads, Music, Videos, Temp" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log
+  echo -e '\nCreating directoies for Downloads, Music, Videos, Temp' && date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
   cd ~
   do_with_root mkdir -m777 Downloads
@@ -1894,19 +1880,18 @@ do_torbox_directories() {
 }
 
 do_torbox_programs() {
-  echo "\nInstallation of torrent box programs" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of torrent box programs' && date >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of torrent box programs \e[0m\n" &&
   cd ~
 
   # OpenVPN:  program
   cd ~
-  echo "Installing program:  OpenVPN" &&
+  echo -e '\nInstalling program:  OpenVPN' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  OpenVPN \e[0m" &&
   do_with_root apt-get install openvpn -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Deluge:  program
-  echo "Installing program:  Deluge" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Deluge \e[0m" &&
   do_with_root touch /var/log/deluged.log >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root touch /var/log/deluge-web.log >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1916,7 +1901,7 @@ do_torbox_programs() {
   do_with_root apt-get install deluge-console -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Deluge:  services
-  echo "Creating service for:  Deluge" >> /var/log/rpi-config_install.log &&
+  echo -e '\nCreating service for:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
   cd /home/pi
   cat > deluge.service << EOF
@@ -1939,7 +1924,7 @@ do_torbox_programs() {
 EOF
   do_with_root mv deluge.service /lib/systemd/system/deluge.service
 
-  echo "Creating service for:  Deluge-Web" >> /var/log/rpi-config_install.log &&
+  echo -e '\nCreating service for:  Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
   cd /home/pi
   cat > deluge-web.service << EOF
@@ -1960,7 +1945,7 @@ EOF
 EOF
   do_with_root mv deluge-web.service /lib/systemd/system/deluge-web.service
 
-  echo "\nStarting service:  Deluge + Deluge-Web" >> /var/log/rpi-config_install.log &&
+  echo -e '\nStarting service:  Deluge + Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Deluge + Deluge-Web \e[0m" &&
   do_with_root systemctl enable deluge >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start deluge >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1968,7 +1953,7 @@ EOF
   do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Jackett:  program
-  echo "\nInstalling program:  Jackett" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Jackett \e[0m" &&
   cd ~/Downloads
   do_with_root wget https://github.com/Jackett/Jackett/releases/download/v0.8.898/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1976,7 +1961,7 @@ EOF
   do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Jackett:  service
-  echo "\nCreating service for:  Jackett" >> /var/log/rpi-config_install.log &&
+  echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
   cd /home/pi
   cat > jackett.service << EOF
@@ -1997,24 +1982,24 @@ EOF
 EOF
   do_with_root mv jackett.service /lib/systemd/system/jackett.service
 
-  echo "\nStarting service:  Jackett" >> /var/log/rpi-config_install.log &&
+  echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
   do_with_root systemctl enable jackett >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Sonarr:  program
-  echo "\nInstalling program:  Sonarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Sonarr \e[0m" &&
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FDA5DFFC >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/sonarr.list >> /var/log/rpi-config_install.log 2>&1 &&
-  echo "Package(s) Update Required"  >> /var/log/rpi-config_install.log &&
+  echo -e '\nPackage(s) Update Required'  >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root apt-get install nzbdrone -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/NzbDrone >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Sonarr:  sevice
-  echo "\nCreating service for:  Sonarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nCreating service for:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
   cd /home/pi
   cat > sonarr.service << EOF
@@ -2036,13 +2021,13 @@ EOF
 EOF
   do_with_root mv sonarr.service /lib/systemd/system/sonarr.service
 
-  echo "\nStarting service:  Sonarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nStarting service:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
   do_with_root systemctl enable sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Radarr:  program
-  echo "\nInstalling program:  Radarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Radarr \e[0m" &&
   cd ~/Downloads
   do_with_root curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 ) >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2050,7 +2035,7 @@ EOF
   do_with_root chown -Rh pi:pi /opt/Radarr >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Radarr:  service
-  echo "\nInstalling program:  Radarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Radarr \e[0m" &&
   cat > radarr.service << EOF
   [Unit]
@@ -2071,13 +2056,13 @@ EOF
 EOF
   do_with_root mv radarr.service /lib/systemd/system/radarr.service
 
-  echo "\nStarting service:  Radarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nStarting service:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
   do_with_root systemctl enable radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Lidarr:  program
-  echo "\nInstalling program:  Lidarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Lidarr \e[0m" &&
   cd ~/Downloads
   do_with_root wget https://github.com/lidarr/Lidarr/releases/download/v0.3.1.471/Lidarr.develop.0.3.1.471.linux.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2085,7 +2070,7 @@ EOF
   do_with_root chown -Rh pi:pi /opt/Lidarr >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Lidarr:  service
-  echo "\nInstalling program:  Lidarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Lidarr \e[0m" &&
   cat > lidarr.service << EOF
   [Unit]
@@ -2106,25 +2091,24 @@ EOF
 EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
 
-  echo "\nStarting service:  Lidarr" >> /var/log/rpi-config_install.log &&
+  echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1
 }
 
 do_torbox_maintenance_programs() {
-  echo "\nInstallation of maintenance utility programs" >> /var/log/rpi-config_install.log &&
-  date >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstallation of maintenance utility programs' && date>> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Installation of maintenance utility programs \e[0m\n" &&
 
   # Midnight Commander
   cd ~
-  echo "\nInstalling program:  Midnight Commander" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Midnight Commander' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Midnight Commander \e[0m" &&
   do_with_root apt-get install mc -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Speedtest
-  echo "\nInstalling program:  Speedtest" >> /var/log/rpi-config_install.log &&
+  echo -e '\nInstalling program:  Speedtest' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Installing program:\e[0;92m  Speedtest \e[0m" &&
   cd /usr/local/bin
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
