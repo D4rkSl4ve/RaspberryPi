@@ -1,4 +1,4 @@
 # RaspberryPi
 
 # raspi-torbox
-sudo su -c "bash <(wget -qO- https://tinyurl.com/raspi-torbox)" root
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/development/raspi-torbox/raspi-torbox.sh)" root
