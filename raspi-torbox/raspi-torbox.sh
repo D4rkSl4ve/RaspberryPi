@@ -1759,7 +1759,7 @@ do_update() {
 }
 
 do_upgrade() {
-  echo -e "\e[0;96m\n> Upgrading package(s) and aplication(s)... \e[0m\n" &&
+  echo -e "\e[0;96m\n> Upgrading package(s) and application(s)... \e[0m\n" &&
   do_with_root apt-get -qq upgrade -y &&
   # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
   sleep 5 &&
@@ -2092,11 +2092,23 @@ EOF
   WantedBy=multi-user.target
 EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
-
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1
+}
+
+do_torbox_programs2() {
+  # Organizr
+  sudo git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller &&
+  cd /opt/OrganizrInstaller/ubuntu/oui &&
+  sudo bash ou_installer.sh &&
+
+  # Ombi
+  echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" &&
+  wget -qO - https://repo.ombi.turd.me/pubkey.txt | sudo apt-key add - &&
+  sudo apt update &&
+  sudo apt install ombi
 }
 
 do_torbox_maintenance_programs() {
@@ -2313,7 +2325,7 @@ if [ "$INTERACTIVE" = True ]; then
         "3 Programs" "Installation of torrent box programs and services" \
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
-        "6 Step" "Description" \
+        "6 Test Programs" "Description" \
         "7 Update\Upgrade" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
         "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
@@ -2341,7 +2353,7 @@ if [ "$INTERACTIVE" = True ]; then
           3\ *) do_torbox_directories && do_torbox_programs ;;
           4\ *) do_torbox_maintenance_programs ;;
           5\ *) do_torbox_programs_preassgined_settings ;;
-          6\ *) do_function ;;
+          6\ *) do_torbox_programs2 ;;
           7\ *) do_update && do_upgrade ;;
           8\ *) do_reboot ;;
           9\ *) do_raspi_config_menu ;;
