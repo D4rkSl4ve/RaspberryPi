@@ -2147,10 +2147,7 @@ do_torbox_programs_preassgined_settings() {
   if [ "$INTERACTIVE" = True ]; then
     whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
   fi
-
-
 }
-
 
 # Command line options for non-interactive use
 
