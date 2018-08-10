@@ -1834,13 +1834,13 @@ do_torbox_requirement_packages() {
   cd ~
 
   # git
-  echo -e '\nDownloading and installing package:  git' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  git \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  git' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo -e '\nDownloading and installing package:  dirmngr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  dirmngr \e[0m"
+  echo -e '\nDownloading and installing package(s):  dirmngr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
@@ -1851,21 +1851,21 @@ do_torbox_requirement_packages() {
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
-  # echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-devel \e[0m" &&
-        echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  libmono-cil-dev \e[0m" &&
+  # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-devel \e[0m" &&
+        echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libmono-cil-dev \e[0m" &&
   # do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
-  # echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-complete \e[0m" &&
+  # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-complete \e[0m" &&
   # do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root apt-get install libmono-cil-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
-  echo -e '\nDownloading and installing package:  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo -e '\nDownloading and installing package:  mediainfo' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mediainfo \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  mediainfo' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update/Upgrade Required \e[0m" &&
   do_with_root apt-get upgrade -y >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1910,21 +1910,21 @@ do_torbox_programs() {
   cd /home/pi
   cat > deluge.service << EOF
   [Unit]
-    Description=Deluge Bittorrent Client Daemon
-    After=network-online.target
+  Description=Deluge Bittorrent Client Daemon
+  After=network-online.target
 
   [Service]
-    Type=simple
-    User=root
-    Group=root
-    UMask=000
-    ExecStart=/usr/bin/deluged -d
-    Restart=on-failure
-    # Configures the time to wait before service is stopped forcefully.
-    TimeoutStopSec=300
+  Type=simple
+  User=root
+  Group=root
+  UMask=000
+  ExecStart=/usr/bin/deluged -d
+  Restart=on-failure
+  # Configures the time to wait before service is stopped forcefully.
+  TimeoutStopSec=300
 
   [Install]
-    WantedBy=multi-user.target
+  WantedBy=multi-user.target
 EOF
   do_with_root mv deluge.service /lib/systemd/system/deluge.service
 
@@ -1938,8 +1938,8 @@ EOF
 
   [Service]
   Type=simple
-  User=pi
-  Group=pi
+  User=root
+  Group=root
   UMask=000
   ExecStart=/usr/bin/deluge-web
   Restart=on-failure
