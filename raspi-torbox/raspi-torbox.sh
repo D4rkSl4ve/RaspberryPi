@@ -1845,15 +1845,18 @@ do_torbox_requirement_packages() {
 
   # mono
   echo -e '\nDownloading and installing:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Requesting package key:\e[0;92m  mono-devel \e[0m" &&
+  # echo -e "\e[0;96m> Requesting package key:\e[0;92m  mono-devel \e[0m" &&
+        echo -e "\e[0;96m> Requesting package key:\e[0;92m  libmono-cil-dev \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-devel \e[0m" &&
-  do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-complete \e[0m" &&
-  do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
+  # echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-devel \e[0m" &&
+        echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  libmono-cil-dev \e[0m" &&
+  # do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
+  # echo -e "\e[0;96m> Downloading and installing package:\e[0;92m  mono-complete \e[0m" &&
+  # do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root apt-get install libmono-cil-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # libcurl
   echo -e '\nDownloading and installing package:  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
@@ -2128,6 +2131,8 @@ do_torbox_maintenance_programs() {
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root easy_install speedtest-cli -y >> /var/log/rpi-config_install.log 2>&1
   cd ~
+
+  # Cloud Commander
 }
 
 # Command line options for non-interactive use
