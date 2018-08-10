@@ -1978,7 +1978,7 @@ EOF
   Restart=always
   RestartSec=5
   Type=simple
-  ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe
+  ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --norestart
   TimeoutStopSec=20
 
   [Install]
