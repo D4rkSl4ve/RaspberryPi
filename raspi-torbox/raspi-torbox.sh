@@ -2108,9 +2108,9 @@ EOF
   echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" >> /var/log/rpi-config_install.log 2>&1 &&
   wget -qO - https://repo.ombi.turd.me/pubkey.txt | sudo apt-key add - >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
-  sudo apt update >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo apt-get update >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Ombi \e[0m" &&
-  sudo apt install ombi >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo apt-get install ombi -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Organizr:  program
   cd ~
@@ -2144,6 +2144,12 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_programs_preassgined_settings() {
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
+  fi
+}
+
+do_future_settings() {
   if [ "$INTERACTIVE" = True ]; then
     whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
   fi
@@ -2372,7 +2378,7 @@ if [ "$INTERACTIVE" = True ]; then
           3\ *) do_torbox_directories && do_torbox_programs ;;
           4\ *) do_torbox_maintenance_programs ;;
           5\ *) do_torbox_programs_preassgined_settings ;;
-          6\ *) do_update ;;
+          6\ *) do_future_settings ;;
           7\ *) do_update && do_upgrade ;;
           8\ *) do_reboot ;;
           9\ *) do_raspi_config_menu ;;
