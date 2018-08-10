@@ -2118,7 +2118,7 @@ EOF
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Organizr \e[0m" &&
   do_with_root git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller >> /var/log/rpi-config_install.log 2>&1 &&
   cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root bash ou_installer.sh >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root bash ou_installer.sh &&
   cd ~
 }
 
