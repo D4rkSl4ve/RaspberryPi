@@ -1673,7 +1673,7 @@ do_swap_change() {
   do_with_root dphys-swapfile setup >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root dphys-swapfile swapon >> /var/log/rpi-config_install.log 2>&1 &&
   if [ "$INTERACTIVE" = True ]; then
-    whiptail --msgbox "SWAPFILE size has been resized to 1GB for smoother performance.\nThe swapfile will be enlarged upon the next reboot." 20 60 2
+    whiptail --msgbox "SWAPFILE size has been resized to 1GB.\nThe swapfile will be enlarged upon the next reboot." 20 60 2
   fi
   ASK_TO_REBOOT=1
 }
@@ -2143,6 +2143,15 @@ do_torbox_maintenance_programs() {
   # Cloud Commander
 }
 
+do_torbox_programs_preassgined_settings() {
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
+  fi
+
+
+}
+
+
 # Command line options for non-interactive use
 
 { # Memory Split & Expand-Rootfs
@@ -2338,7 +2347,7 @@ if [ "$INTERACTIVE" = True ]; then
         "3 Programs" "Installation of torrent box programs and services" \
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
-        "6 Test Programs" "Description" \
+        "6 Future" "Description" \
         "7 Update\Upgrade" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
         "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
@@ -2366,7 +2375,7 @@ if [ "$INTERACTIVE" = True ]; then
           3\ *) do_torbox_directories && do_torbox_programs ;;
           4\ *) do_torbox_maintenance_programs ;;
           5\ *) do_torbox_programs_preassgined_settings ;;
-          6\ *) do_torbox_programs2 ;;
+          6\ *) do_update ;;
           7\ *) do_update && do_upgrade ;;
           8\ *) do_reboot ;;
           9\ *) do_raspi_config_menu ;;
