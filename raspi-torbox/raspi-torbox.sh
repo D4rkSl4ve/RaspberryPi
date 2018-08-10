@@ -1909,22 +1909,22 @@ do_torbox_programs() {
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
   cd /home/pi
   cat > deluge.service << EOF
-  [Unit]
-  Description=Deluge Bittorrent Client Daemon
-  After=network-online.target
+[Unit]
+Description=Deluge Bittorrent Client Daemon
+After=network-online.target
 
-  [Service]
-  Type=simple
-  User=root
-  Group=root
-  UMask=000
-  ExecStart=/usr/bin/deluged -d
-  Restart=on-failure
-  # Configures the time to wait before service is stopped forcefully.
-  TimeoutStopSec=300
+[Service]
+Type=simple
+User=root
+Group=root
+UMask=000
+ExecStart=/usr/bin/deluged -d
+Restart=on-failure
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv deluge.service /lib/systemd/system/deluge.service
 
@@ -1932,20 +1932,20 @@ EOF
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
   cd /home/pi
   cat > deluge-web.service << EOF
-  [Unit]
-  Description=Deluge Bittorrent Client Web Interface
-  After=network-online.target
+[Unit]
+Description=Deluge Bittorrent Client Web Interface
+After=network-online.target
 
-  [Service]
-  Type=simple
-  User=root
-  Group=root
-  UMask=000
-  ExecStart=/usr/bin/deluge-web
-  Restart=on-failure
+[Service]
+Type=simple
+User=root
+Group=root
+UMask=000
+ExecStart=/usr/bin/deluge-web
+Restart=on-failure
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv deluge-web.service /lib/systemd/system/deluge-web.service
 
@@ -1969,20 +1969,20 @@ EOF
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
   cd /home/pi
   cat > jackett.service << EOF
-  [Unit]
-  Description=Jackett Daemon
-  After=network.target
+[Unit]
+Description=Jackett Daemon
+After=network.target
 
-  [Service]
-  User=pi
-  Restart=always
-  RestartSec=5
-  Type=simple
-  ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --norestart
-  TimeoutStopSec=20
+[Service]
+User=pi
+Restart=always
+RestartSec=5
+Type=simple
+ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --norestart
+TimeoutStopSec=20
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv jackett.service /lib/systemd/system/jackett.service
 
@@ -2009,21 +2009,21 @@ EOF
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
   cd /home/pi
   cat > sonarr.service << EOF
-  [Unit]
-  Description=Sonarr Daemon
-  After=syslog.target network.target
+[Unit]
+Description=Sonarr Daemon
+After=syslog.target network.target
 
-  [Service]
-  User=pi
-  Group=pi
-  Type=simple
-  ExecStart=/usr/bin/mono /opt/NzbDrone/NzbDrone.exe -nobrowser
-  TimeoutStopSec=20
-  KillMode=process
-  Restart=on-failure
+[Service]
+User=pi
+Group=pi
+Type=simple
+ExecStart=/usr/bin/mono /opt/NzbDrone/NzbDrone.exe -nobrowser
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv sonarr.service /lib/systemd/system/sonarr.service
 
@@ -2044,21 +2044,21 @@ EOF
   echo -e '\nCreating service for:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Radarr \e[0m" &&
   cat > radarr.service << EOF
-  [Unit]
-  Description=Radarr Daemon
-  After=syslog.target network.target
+[Unit]
+Description=Radarr Daemon
+After=syslog.target network.target
 
-  [Service]
-  User=pi
-  Group=pi
-  Type=simple
-  ExecStart=/usr/bin/mono /opt/Radarr/Radarr.exe -nobrowser
-  TimeoutStopSec=20
-  KillMode=process
-  Restart=on-failure
+[Service]
+User=pi
+Group=pi
+Type=simple
+ExecStart=/usr/bin/mono /opt/Radarr/Radarr.exe -nobrowser
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv radarr.service /lib/systemd/system/radarr.service
 
@@ -2079,21 +2079,21 @@ EOF
   echo -e '\nCreating service for:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Lidarr \e[0m" &&
   cat > lidarr.service << EOF
-  [Unit]
-  Description=Lidarr Daemon
-  After=syslog.target network.target
+[Unit]
+Description=Lidarr Daemon
+After=syslog.target network.target
 
-  [Service]
-  User=pi
-  Group=pi
-  Type=simple
-  ExecStart=/usr/bin/mono /opt/Lidarr/Lidarr.exe -nobrowser
-  TimeoutStopSec=20
-  KillMode=process
-  Restart=on-failure
+[Service]
+User=pi
+Group=pi
+Type=simple
+ExecStart=/usr/bin/mono /opt/Lidarr/Lidarr.exe -nobrowser
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
 
-  [Install]
-  WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
