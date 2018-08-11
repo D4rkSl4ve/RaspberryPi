@@ -1,0 +1,15 @@
+<Config>
+  <LogLevel>Info</LogLevel>
+  <Port>8989</Port>
+  <UrlBase>/sonarr</UrlBase>
+  <BindAddress>*</BindAddress>
+  <SslPort>9898</SslPort>
+  <EnableSsl>False</EnableSsl>
+  <ApiKey>93cb096b0d8a4e88aeeeead0c53b0f19</ApiKey>
+  <AuthenticationMethod>None</AuthenticationMethod>
+  <Branch>master</Branch>
+  <LaunchBrowser>True</LaunchBrowser>
+  <SslCertHash></SslCertHash>
+  <UpdateMechanism>BuiltIn</UpdateMechanism>
+  <UpdateAutomatically>True</UpdateAutomatically>
+</Config>
