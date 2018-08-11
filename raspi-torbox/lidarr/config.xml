@@ -5,7 +5,7 @@
   <BindAddress>*</BindAddress>
   <SslPort>6868</SslPort>
   <EnableSsl>False</EnableSsl>
-  <ApiKey>9361bcdc7f274073b714eed1d83b5cf9</ApiKey>
+  <ApiKey>needsToBeReset</ApiKey>
   <AuthenticationMethod>None</AuthenticationMethod>
   <Branch>develop</Branch>
   <LaunchBrowser>True</LaunchBrowser>
