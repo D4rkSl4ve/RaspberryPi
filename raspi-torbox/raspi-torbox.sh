@@ -2153,6 +2153,12 @@ do_torbox_programs_preassgined_settings() {
   echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
 
+  /*create whiptail with this information and a Yes/No to advanced
+    if yes, continue
+    if no, explain how to open each file
+    To use this, all the apps must be previously installed, started after a reboot, and
+    at least opened once, so it creates all the files and folders needed, before replacement */
+
   # Deluge
   echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
@@ -2170,9 +2176,16 @@ do_torbox_programs_preassgined_settings() {
   do_with_root systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log
 
   # Jackett
+  # file are at /.config/Jackett
+
   # Sonarr
+  # file are at /.config/NzbDrone
+
   # Radarr
+  # file are at /.config/Radarr
+
   # lidarr
+  # file are at /.config/NzbDrone
 }
 
 do_future_settings() {
