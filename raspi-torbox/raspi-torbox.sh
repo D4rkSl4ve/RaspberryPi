@@ -1849,8 +1849,8 @@ do_torbox_requirement_packages() {
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mono
-  echo -e '\nDownloading and installing:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
-
+  echo -e '\nDownloading and installing:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log
+  # &&
   # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libmono-cil-dev \e[0m" &&
   # do_with_root apt-get install libmono-cil-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
