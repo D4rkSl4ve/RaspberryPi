@@ -2142,8 +2142,7 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_programs_preassigned_settings() {
-  if [ $ASK_TO_REBOOT -eq 1 ]; then
-    whiptail --yesno "Have you met the following criteria before running the preassigned settings?\n
+  whiptail --yesno "Have you met the following criteria before running the preassigned settings?\n
     • Rebooted after running the '1 First Time Boot'
     • Installed the '2 Requirement Packages'
     • Rebooted after installing all the '3 TorBox Programs'
@@ -2231,7 +2230,6 @@ do_torbox_programs_preassigned_settings() {
   ASK_TO_REBOOT=1
   fi
 fi
-  exit 0
 }
 
 do_future_settings() {
