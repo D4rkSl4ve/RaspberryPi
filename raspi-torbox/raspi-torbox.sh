@@ -1854,6 +1854,7 @@ do_torbox_requirement_packages() {
   # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libmono-cil-dev \e[0m" &&
   # do_with_root apt-get install libmono-cil-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
+  # hotio @ Radarr
   # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-devel \e[0m" &&
   # do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
 
@@ -2149,27 +2150,24 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_programs_preassgined_settings() {
-  if [ "$INTERACTIVE" = True ]; then
-    whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
-  fi
+  echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
 
-  # deluge
-  # do_with_root systemctl stop deluge && do_with_root systemctl stop deluge-web &&
-  # do_with_root wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg &&
-  # do_with_root chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg &&
-  # do_with_root rm /root/.config/deluge/core.conf &&
-  # do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/core.conf -O /root/.config/deluge/core.conf &&
-  # do_with_root systemctl start deluge && do_with_root systemctl start deluge-web &&
-  # follow steps to auto-login deluge  /*
-
-  vim /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js:deluge.LoginWindow (near the end, replace the onShow function):
-        onShow:function(){this.onLogin();}
-
-  vim /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py (comment out the if statement and add return True):
-        #if s.hexdigest() == config["pwd_sha1"]:
-        #    return True
-        return True
-  */
+  # Deluge
+  echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
+  do_with_root systemctl stop deluge && do_with_root systemctl stop deluge-web &&
+  do_with_root wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg &&
+  do_with_root chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg &&
+  do_with_root rm /root/.config/deluge/core.conf &&
+  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge-core.conf -O /root/.config/deluge/core.conf &&
+  do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js-backup &&
+  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge-all.js -O /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js &&
+  do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js &&
+  do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py-backup &&
+  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge-auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py &&
+  do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py &&
+  do_with_root systemctl start deluge && do_with_root systemctl start deluge-web
 }
 
 do_future_settings() {
