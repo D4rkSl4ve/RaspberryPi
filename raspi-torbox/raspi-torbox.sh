@@ -2141,7 +2141,7 @@ do_torbox_maintenance_programs() {
   # Cloud Commander
 }
 
-do_torbox_programs_preassigned_settings() {
+do_torbox_preassigned_settings() {
   whiptail --yesno "Have you met the following criteria before running the preassigned settings?\n
     • Rebooted after running the '1 First Time Boot'
     • Installed the '2 Requirement Packages'
@@ -2460,7 +2460,7 @@ if [ "$INTERACTIVE" = True ]; then
           2\ *) do_torbox_requirement_packages ;;
           3\ *) do_torbox_directories && do_torbox_programs ;;
           4\ *) do_torbox_maintenance_programs ;;
-          5\ *) do_torbox_programs_preassigned_settings ;;
+          5\ *) do_torbox_preassigned_settings ;;
           6\ *) do_future_settings ;;
           7\ *) do_update && do_upgrade ;;
           8\ *) do_reboot ;;
