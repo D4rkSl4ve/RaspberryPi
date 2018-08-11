@@ -1840,7 +1840,7 @@ do_torbox_requirement_packages() {
 
   # dirmngr
   echo -e '\nDownloading and installing package(s):  apt-transport-https dirmngr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  apt-transport-htps dirmngr \e[0m"
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  apt-transport-https dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Requesting package key:\e[0;92m  mono-project/repo \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
