@@ -1877,10 +1877,10 @@ do_torbox_directories() {
   echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m\n> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
   cd ~
-  do_with_root mkdir -m777 Downloads
-  do_with_root mkdir -m777 Music
-  do_with_root mkdir -m777 Videos
-  do_with_root mkdir -m777 Temp
+  mkdir -m777 Downloads
+  mkdir -m777 Music
+  mkdir -m777 Videos
+  mkdir -m777 Temp
 }
 
 do_torbox_programs() {
@@ -1960,9 +1960,9 @@ EOF
   echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
   cd ~/Downloads
-  do_with_root wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
+  wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
+  tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  # do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Jackett:  service
   echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
