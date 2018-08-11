@@ -1859,7 +1859,9 @@ do_torbox_requirement_packages() {
 
   # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-complete \e[0m" &&
   # do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
+} # TESTING
 
+do_testing() {
 
   # libcurl
   echo -e '\nDownloading and installing package(s):  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
