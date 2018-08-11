@@ -2169,6 +2169,14 @@ do_torbox_programs_preassgined_settings() {
 
   # Jackett
   # file are at /.config/Jackett
+  echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
+  do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
+  cd ~/.config/Jackett >> /var/log/rpi-config_install.log &&
+  rm SeverConfig.json >> /var/log/rpi-config_install.log &&
+  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/ServerConfig.json -O ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
+  do_with_root systemctl start jackett >> /var/log/rpi-config_install.log &&
 
   # Sonarr
   echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
@@ -2177,8 +2185,11 @@ do_torbox_programs_preassgined_settings() {
   cd ~/.config/NzbDrone >> /var/log/rpi-config_install.log &&
   rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
   do_with_root systemctl start sonarr >> /var/log/rpi-config_install.log &&
 
   # Radarr
@@ -2188,8 +2199,11 @@ do_torbox_programs_preassgined_settings() {
   cd ~/.config/Radarr >> /var/log/rpi-config_install.log &&
   rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/config.xml -O ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db -O ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
   do_with_root systemctl start radarr >> /var/log/rpi-config_install.log &&
 
   # lidarr
@@ -2199,9 +2213,12 @@ do_torbox_programs_preassgined_settings() {
   cd ~/.config/Lidarr >> /var/log/rpi-config_install.log &&
   rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
+  chmod 644 ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
   # wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db-journal -O ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
+  # chmod 644 ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
+  do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log
 }
 
 do_future_settings() {
