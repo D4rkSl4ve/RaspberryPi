@@ -1907,7 +1907,7 @@ do_torbox_programs() {
   # Deluge:  services
   echo -e '\nCreating service for:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
-  cd /home/pi
+  cd ~
   cat > deluge.service << EOF
 [Unit]
 Description=Deluge Bittorrent Client Daemon
@@ -1930,7 +1930,7 @@ EOF
 
   echo -e '\nCreating service for:  Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
-  cd /home/pi
+  cd ~
   cat > deluge-web.service << EOF
 [Unit]
 Description=Deluge Bittorrent Client Web Interface
@@ -1961,13 +1961,13 @@ EOF
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
   cd ~/Downloads
   wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
-  tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  # do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Jackett:  service
   echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
-  cd /home/pi
+  cd ~
   cat > jackett.service << EOF
 [Unit]
 Description=Jackett Daemon
@@ -1978,7 +1978,7 @@ User=pi
 Restart=always
 RestartSec=5
 Type=simple
-ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --NoRestart
+ExecStart=/usr/bin/mono --debug /opt/Jackett/JackettConsole.exe --NoRestart
 TimeoutStopSec=20
 
 [Install]
@@ -2007,7 +2007,7 @@ EOF
   # Sonarr:  sevice
   echo -e '\nCreating service for:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
-  cd /home/pi
+  cd ~
   cat > sonarr.service << EOF
 [Unit]
 Description=Sonarr Daemon
