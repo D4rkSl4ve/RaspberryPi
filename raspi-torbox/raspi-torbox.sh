@@ -1978,7 +1978,7 @@ User=pi
 Restart=always
 RestartSec=5
 Type=simple
-ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --norestart
+ExecStart=/usr/bin/mono /opt/Jackett/JackettConsole.exe --NoRestart
 TimeoutStopSec=20
 
 [Install]
