@@ -2142,6 +2142,10 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_programs_preassgined_settings() {
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --yesno "Would you like to enable compensation for displays with overscan?" $DEFAULT 20 60 2
+    RET=$?
+
   echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
 
@@ -2168,7 +2172,6 @@ do_torbox_programs_preassgined_settings() {
   do_with_root systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log
 
   # Jackett
-  # file are at /.config/Jackett
   echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
   do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
@@ -2218,7 +2221,13 @@ do_torbox_programs_preassgined_settings() {
   chmod 644 ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
   # wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db-journal -O ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
   # chmod 644 ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log
+  do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
+
+  ASK_TO_REBOOT=1
+
+  else
+    RET=$1
+  fi
 }
 
 do_future_settings() {
