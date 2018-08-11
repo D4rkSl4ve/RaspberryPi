@@ -2141,19 +2141,24 @@ do_torbox_maintenance_programs() {
   # Cloud Commander
 }
 
-do_torbox_programs_preassgined_settings() {
-  if [ "$INTERACTIVE" = True ]; then
-    whiptail --yesno "Would you like to enable compensation for displays with overscan?" $DEFAULT 20 60 2
-    RET=$?
+do_torbox_programs_preassigned_settings() {
+  if [ $ASK_TO_REBOOT -eq 1 ]; then
+    whiptail --yesno "Have you met the following criteria before running the preassigned settings?\n
+    • Rebooted after running the '1 First Time Boot'
+    • Installed the '2 Requirement Packages'
+    • Rebooted after installing all the '3 TorBox Programs'
+    • All the services have been started by their respective port numbers
+      via a local browser  (ie torboxIP:port - 192.168.0.60:8989)
+      - Deluge  (torboxIP:8112)
+      - Jackett (torboxIP:9117)
+      - Sonarr  (torboxIP:8989)
+      - Radarr  (torboxIP:7878)
+      - Lidarr  (torboxIP:8686)
+    " 20 80 6
+    if [ $? -eq 0 ]; then # yes
 
   echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
-
-  /*create whiptail with this information and a Yes/No to advanced
-    if yes, continue
-    if no, explain how to open each file
-    To use this, all the apps must be previously installed, started after a reboot, and
-    at least opened once, so it creates all the files and folders needed, before replacement */
 
   # Deluge
   echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
@@ -2224,10 +2229,9 @@ do_torbox_programs_preassgined_settings() {
   do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
 
   ASK_TO_REBOOT=1
-
-  else
-    RET=$1
   fi
+fi
+  exit 0
 }
 
 do_future_settings() {
@@ -2428,7 +2432,7 @@ if [ "$INTERACTIVE" = True ]; then
       FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --backtitle "$(cat /proc/device-tree/model)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 First Time Boot" "First Time Boot Changes Required (reboot required at end)" \
         "2 Requirement Packages" "Installation of required packages, create folders, and install log" \
-        "3 Programs" "Installation of torrent box programs and services" \
+        "3 TorBox Programs" "Installation of torrent box programs and services" \
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
         "6 Future" "Description" \
@@ -2458,7 +2462,7 @@ if [ "$INTERACTIVE" = True ]; then
           2\ *) do_torbox_requirement_packages ;;
           3\ *) do_torbox_directories && do_torbox_programs ;;
           4\ *) do_torbox_maintenance_programs ;;
-          5\ *) do_torbox_programs_preassgined_settings ;;
+          5\ *) do_torbox_programs_preassigned_settings ;;
           6\ *) do_future_settings ;;
           7\ *) do_update && do_upgrade ;;
           8\ *) do_reboot ;;
