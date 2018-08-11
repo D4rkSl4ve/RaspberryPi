@@ -2230,7 +2230,6 @@ do_torbox_preassigned_settings() {
 
   ASK_TO_REBOOT=1
   fi
-fi
 }
 
 do_future_settings() {
