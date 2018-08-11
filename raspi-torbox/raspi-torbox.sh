@@ -1850,17 +1850,9 @@ do_torbox_requirement_packages() {
 
   # mono
   echo -e '\nDownloading and installing:  mono-devel and mono-complete' >> /var/log/rpi-config_install.log &&
-
-  # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libmono-cil-dev \e[0m" &&
-  # do_with_root apt-get install libmono-cil-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
-
-  # hotio @ Radarr
-  # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-devel \e[0m" &&
-  # do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
-
-  # echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-complete \e[0m" &&
-  # do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
-} # TESTING
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-devel \e[0m" &&
+  do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1
+}
 
 do_testing() {
 
@@ -2180,12 +2172,26 @@ do_torbox_programs_preassgined_settings() {
 
   # Sonarr
   # file are at /.config/NzbDrone
+  /*  Using file system backup
+      Re-install Sonarr
+      Run Sonarr once to get the AppData directory location
+      Stop Sonarr
+      Delete the contents of the AppData directory (Including the .db-wal/.db-journal files if they exist)
+      Restore from your backup
+      Start Sonarr
+      As long as the paths are the same, everything will pick up where it left off
+  */
 
   # Radarr
   # file are at /.config/Radarr
 
+
+
   # lidarr
   # file are at /.config/NzbDrone
+
+
+
 }
 
 do_future_settings() {
