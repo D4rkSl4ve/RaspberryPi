@@ -2096,7 +2096,7 @@ EOF
   do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1
 
-  /*
+  :'
   # Ombi:  program
   cd ~
   echo -e '\nDownloading and installing program:  Ombi' >> /var/log/rpi-config_install.log &&
@@ -2116,7 +2116,7 @@ EOF
   cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root bash ou_installer.sh &&
   cd ~
-  */
+  '
 }
 
 do_torbox_maintenance_programs() {
