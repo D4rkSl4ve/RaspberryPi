@@ -2139,7 +2139,9 @@ do_torbox_maintenance_programs() {
 }
 
 do_torbox_preassigned_settings() {
-  whiptail --yesno "Have you met the following criteria before running the preassigned settings?\n
+  if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno "
+  Has the following criteria been met?
+
     • Rebooted after running the '1 First Time Boot'
     • Installed the '2 Requirement Packages'
     • Rebooted after installing all the '3 TorBox Programs'
@@ -2150,85 +2152,84 @@ do_torbox_preassigned_settings() {
       - Sonarr  (torboxIP:8989)
       - Radarr  (torboxIP:7878)
       - Lidarr  (torboxIP:8686)
-    " 20 80 6
-    RET=$?
-  if [ $? -eq 0 ]; then # yes
+  " 20 80) then
 
-  echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
+    echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
 
-  # Deluge
-  echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
-  do_with_root systemctl stop deluge && do_with_root systemctl stop deluge-web >> /var/log/rpi-config_install.log &&
-  do_with_root wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/deluge/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log &&
-  do_with_root chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log &&
-  do_with_root rm /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log &&
-  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/core.conf -O /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log &&
-  do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js-backup >> /var/log/rpi-config_install.log &&
-  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/deluge-all.js -O /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log &&
-  do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log &&
-  do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py-backup >> /var/log/rpi-config_install.log &&
-  do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log &&
-  do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log
+    # Deluge
+    echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
+    do_with_root systemctl stop deluge && do_with_root systemctl stop deluge-web >> /var/log/rpi-config_install.log &&
+    do_with_root wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/deluge/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log &&
+    do_with_root chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log &&
+    do_with_root rm /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log &&
+    do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/core.conf -O /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log &&
+    do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js-backup >> /var/log/rpi-config_install.log &&
+    do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/deluge-all.js -O /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log &&
+    do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log &&
+    do_with_root mv /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py-backup >> /var/log/rpi-config_install.log &&
+    do_with_root wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log &&
+    do_with_root chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log &&
+    do_with_root systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log
 
-  # Jackett
-  echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
-  do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
-  cd ~/.config/Jackett >> /var/log/rpi-config_install.log &&
-  rm ServerConfig.json >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/ServerConfig.json -O ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start jackett >> /var/log/rpi-config_install.log &&
+    # Jackett
+    echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
+    do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
+    cd ~/.config/Jackett >> /var/log/rpi-config_install.log &&
+    rm ServerConfig.json >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/ServerConfig.json -O ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
+    do_with_root systemctl start jackett >> /var/log/rpi-config_install.log &&
 
-  # Sonarr
-  echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Sonarr \e[0m" &&
-  do_with_root systemctl stop sonarr >> /var/log/rpi-config_install.log &&
-  cd ~/.config/NzbDrone >> /var/log/rpi-config_install.log &&
-  rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start sonarr >> /var/log/rpi-config_install.log &&
+    # Sonarr
+    echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Sonarr \e[0m" &&
+    do_with_root systemctl stop sonarr >> /var/log/rpi-config_install.log &&
+    cd ~/.config/NzbDrone >> /var/log/rpi-config_install.log &&
+    rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    do_with_root systemctl start sonarr >> /var/log/rpi-config_install.log &&
 
-  # Radarr
-  echo -e '\nDownloading and replacing file(s) for:  Radarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Radarr \e[0m" &&
-  do_with_root systemctl stop radarr >> /var/log/rpi-config_install.log &&
-  cd ~/.config/Radarr >> /var/log/rpi-config_install.log &&
-  rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/config.xml -O ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db -O ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start radarr >> /var/log/rpi-config_install.log &&
+    # Radarr
+    echo -e '\nDownloading and replacing file(s) for:  Radarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Radarr \e[0m" &&
+    do_with_root systemctl stop radarr >> /var/log/rpi-config_install.log &&
+    cd ~/.config/Radarr >> /var/log/rpi-config_install.log &&
+    rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/config.xml -O ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Radarr/config.xml >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db -O ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    do_with_root systemctl start radarr >> /var/log/rpi-config_install.log &&
 
-  # lidarr
-  echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Lidarr \e[0m" &&
-  do_with_root systemctl stop lidarr >> /var/log/rpi-config_install.log &&
-  cd ~/.config/Lidarr >> /var/log/rpi-config_install.log &&
-  rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
-  wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
-  chmod 644 ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
-  # wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db-journal -O ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
-  # chmod 644 ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
-  do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
+    # lidarr
+    echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Lidarr \e[0m" &&
+    do_with_root systemctl stop lidarr >> /var/log/rpi-config_install.log &&
+    cd ~/.config/Lidarr >> /var/log/rpi-config_install.log &&
+    rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
+    chmod 644 ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
+    # wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db-journal -O ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
+    # chmod 644 ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
+    do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
 
-  ASK_TO_REBOOT=1
-else
-  return 0
-fi
+    ASK_TO_REBOOT=1
+
+    else
+      return 0
+  fi
 }
 
 do_future_settings() {
