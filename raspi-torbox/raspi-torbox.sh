@@ -1872,10 +1872,10 @@ do_torbox_directories() {
   echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m\n> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
   cd ~
-  mkdir -m777 Downloads
-  mkdir -m777 Music
-  mkdir -m777 Videos
-  mkdir -m777 Temp
+  mkdir -m777 /home/pi/Downloads
+  mkdir -m777 /home/pi/Music
+  mkdir -m777 /home/pi/Videos
+  mkdir -m777 /home/pi/Temp
 }
 
 do_torbox_programs() {
