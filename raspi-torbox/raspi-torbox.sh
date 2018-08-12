@@ -1958,7 +1958,7 @@ EOF
   # Jackett:  program
   echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
-  cd ~/Downloads
+  cd /home/pi/Downloads
   wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2034,7 +2034,7 @@ EOF
   # Radarr:  program
   echo -e '\nDownloading and installing program:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Radarr \e[0m" &&
-  cd ~/Downloads
+  cd /home/pi/Downloads
   do_with_root curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 ) >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Radarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/Radarr >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2069,7 +2069,7 @@ EOF
   # Lidarr:  program
   echo -e '\nDownloading and installing program:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Lidarr \e[0m" &&
-  cd ~/Downloads
+  cd /home/pi/Downloads
   do_with_root wget https://github.com/lidarr/Lidarr/releases/download/v0.3.1.471/Lidarr.develop.0.3.1.471.linux.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Lidarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root chown -Rh pi:pi /opt/Lidarr >> /var/log/rpi-config_install.log 2>&1 &&
