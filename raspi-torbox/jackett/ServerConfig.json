@@ -1,7 +1,7 @@
 {
   "Port": 9117,
   "AllowExternal": true,
-  "APIKey": "needsToBeReset",
+  "APIKey": "",
   "AdminPassword": null,
   "InstanceId": "gll8nrqhljpcvevmge18jnqme33ftqsbmoc8y6gehmk6ni5gmw12dh33pxhhtfuo",
   "BlackholeDir": null,
