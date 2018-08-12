@@ -2429,7 +2429,7 @@ if [ "$INTERACTIVE" = True ]; then
       FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --backtitle "$(cat /proc/device-tree/model)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 First Time Boot" "First Time Boot Changes Required (reboot required at end)" \
         "2 Requirement Packages" "Installation of required packages, create folders, and install log" \
-        "3 TorBox Programs" "Installation of torrent box programs and services" ON \
+        "3 TorBox Programs" "Installation of torrent box programs and services" \
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
         "6 Future" "Description" \
