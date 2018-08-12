@@ -2178,7 +2178,7 @@ do_torbox_preassigned_settings() {
   echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
   do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
   cd ~/.config/Jackett >> /var/log/rpi-config_install.log &&
-  rm SeverConfig.json >> /var/log/rpi-config_install.log &&
+  rm ServerConfig.json >> /var/log/rpi-config_install.log &&
   wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/ServerConfig.json -O ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
   chmod 644 ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
   do_with_root systemctl start jackett >> /var/log/rpi-config_install.log &&
@@ -2429,7 +2429,7 @@ if [ "$INTERACTIVE" = True ]; then
       FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --backtitle "$(cat /proc/device-tree/model)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 First Time Boot" "First Time Boot Changes Required (reboot required at end)" \
         "2 Requirement Packages" "Installation of required packages, create folders, and install log" \
-        "3 TorBox Programs" "Installation of torrent box programs and services" \
+        "3 TorBox Programs" "Installation of torrent box programs and services" ON \
         "4 Maintenance Utilities" "Installation of maintenance utilities" \
         "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
         "6 Future" "Description" \
