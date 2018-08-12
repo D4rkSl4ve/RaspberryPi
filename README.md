@@ -20,3 +20,6 @@ do_with_root apt-get install <program> -y >> /var/log/rpi-config_install.log 2>&
 
 do_torbox_programs_preassgined_settings() {}
 ```
+## To-Do list
+- check all preassigned settings
+- finish whiptail menu for preassigned Settings
