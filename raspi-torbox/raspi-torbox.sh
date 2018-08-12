@@ -2096,27 +2096,25 @@ EOF
   do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1
 
-  :'
   # Ombi:  program
-  cd ~
-  echo -e '\nDownloading and installing program:  Ombi' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Adding package to sources.list for:\e[0;92m  Ombi \e[0m" &&
-  echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" >> /var/log/rpi-config_install.log 2>&1 &&
-  wget -qO - https://repo.ombi.turd.me/pubkey.txt | sudo apt-key add - >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
-  sudo apt-get update >> /var/log/rpi-config_install.log 2>&1 &&
-  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Ombi \e[0m" &&
-  sudo apt-get install ombi -y >> /var/log/rpi-config_install.log 2>&1 &&
+  #cd ~
+  #echo -e '\nDownloading and installing program:  Ombi' >> /var/log/rpi-config_install.log &&
+  #echo -e "\e[0;96m> Adding package to sources.list for:\e[0;92m  Ombi \e[0m" &&
+  #echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" >> /var/log/rpi-config_install.log 2>&1 &&
+  #wget -qO - https://repo.ombi.turd.me/pubkey.txt | sudo apt-key add - >> /var/log/rpi-config_install.log 2>&1 &&
+  #echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
+  #sudo apt-get update >> /var/log/rpi-config_install.log 2>&1 &&
+  #echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Ombi \e[0m" &&
+  #sudo apt-get install ombi -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Organizr:  program
-  cd ~
-  echo -e '\nDownloading and installing program:  Organizr' >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Organizr \e[0m" &&
-  do_with_root git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller >> /var/log/rpi-config_install.log 2>&1 &&
-  cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root bash ou_installer.sh &&
-  cd ~
-  '
+  #cd ~
+  #echo -e '\nDownloading and installing program:  Organizr' >> /var/log/rpi-config_install.log &&
+  #echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Organizr \e[0m" &&
+  #do_with_root git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller >> /var/log/rpi-config_install.log 2>&1 &&
+  #cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
+  #do_with_root bash ou_installer.sh &&
+  #cd ~
 }
 
 do_torbox_maintenance_programs() {
