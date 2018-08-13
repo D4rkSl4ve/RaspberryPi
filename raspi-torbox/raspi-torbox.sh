@@ -2156,10 +2156,11 @@ do_torbox_preassigned_settings() {
   if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno "
   Has the following criteria been met?
 
-    • Rebooted after running the '1 First Time Boot'
-    • Installed the '2 Requirement Packages'
-    • Rebooted after installing all the '3 TorBox Programs'
-    • All the services have been started by their respective port numbers
+    • Rebooted after running the 'First Time Boot'
+    • Installed the 'Requirement Packages'
+    • Installed the 'TorBox Programs'
+    • Rebooted after installing the 'Required Packages and TorBox Programs'
+    • All the services have been started/opened by their respective port numbers
       via a local browser  (ie torboxIP:port - 192.168.0.60:8989)
       - Deluge  (torboxIP:8112)
       - Jackett (torboxIP:9117)
