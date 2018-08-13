@@ -2175,7 +2175,7 @@ do_torbox_preassigned_settings() {
     # Deluge
     echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
-    sudo systemctl stop deluge && do_with_root systemctl stop deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl stop deluge && sudo systemctl stop deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
     sudo wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/deluge/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
     sudo chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
     sudo rm /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2187,7 +2187,7 @@ do_torbox_preassigned_settings() {
     sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo sed -i 's+""show_session_speed": false,+"show_session_speed": true,+' /root/.config/deluge/web.conf >> /var/log/rpi-config_install.log 2>&1 &&
-    sudo systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl start deluge && sudo systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
 
     # Jackett
     echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
