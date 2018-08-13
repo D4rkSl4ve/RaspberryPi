@@ -2146,7 +2146,7 @@ do_torbox_maintenance_programs() {
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Speedtest \e[0m" &&
   cd /usr/local/bin
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root easy_install speedtest-cli -y >> /var/log/rpi-config_install.log 2>&1
+  do_with_root easy_install speedtest-cli >> /var/log/rpi-config_install.log 2>&1
   cd ~
 
   # Cloud Commander
@@ -2192,7 +2192,7 @@ do_torbox_preassigned_settings() {
     echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
     sudo systemctl stop jackett >> /var/log/rpi-config_install.log 2>&1 &&
-    sed -i 's+"BasePathOverride": "",+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
+    sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
     sudo systemctl start jackett >> /var/log/rpi-config_install.log 2>&1 &&
 
     # Sonarr
