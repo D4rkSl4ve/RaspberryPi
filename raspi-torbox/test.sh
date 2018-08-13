@@ -51,5 +51,4 @@ if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno 
       else
         return 0
     fi
-    do_reboot_reminder
-  }
+}
