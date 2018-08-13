@@ -1974,13 +1974,12 @@ EOF
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
   cd /home/pi/Downloads
   wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/Jackett &&
+  sudo tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo chown -Rh pi:pi /opt/Jackett &&
 
   # Jackett:  service
   echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
-  cd /home/pi
   cat > jackett.service << EOF
   [Unit]
   Description=Jackett Daemon
@@ -1997,7 +1996,7 @@ EOF
   [Install]
   WantedBy=multi-user.target
 EOF
-  do_with_root mv jackett.service /lib/systemd/system/jackett.service
+  sudo mv jackett.service /lib/systemd/system/jackett.service
 
   echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
@@ -2208,6 +2207,11 @@ do_torbox_preassigned_settings() {
     sudo systemctl stop jackett &&
     sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
     sed -i 's+"UpdatePrerelease": false,+"UpdatePrerelease": true,+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
+    install -d -m 0755 -o pi -g pi /home/pi/.config/Jackett/Indexers && cd /home/pi/.config/Jackett/Indexers &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/eztv.json >> /var/log/rpi-config_install.log 2>&1 &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/rarbg.json >> /var/log/rpi-config_install.log 2>&1 &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/thepiratebay.json >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chown -R pi:pi /home/pi/.config/Jackett/Indexers/*
     sudo systemctl start jackett &&
     sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
 
