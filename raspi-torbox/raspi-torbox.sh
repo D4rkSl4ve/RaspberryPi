@@ -1843,7 +1843,7 @@ do_raspi_config_menu() {
 do_torbox_requirement_packages() {
   echo -e '\nDownload and installation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m\n> Download and installation of required packages, create folders, and install log file \e[0m\n" &&
-  cd ~
+  cd /home/pi
 
   # git
   echo -e '\nDownloading and installing package(s):  git' >> /var/log/rpi-config_install.log &&
@@ -1883,7 +1883,6 @@ do_torbox_requirement_packages() {
 do_torbox_directories() {
   echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m\n> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
-  cd ~
   install -d -m 0755 -o pi -g pi /home/pi/Downloads
   install -d -m 0755 -o pi -g pi /home/pi/Music
   install -d -m 0755 -o pi -g pi /home/pi/Videos
@@ -1893,10 +1892,10 @@ do_torbox_directories() {
 do_torbox_programs() {
   echo -e '\nDownload and installation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;93m\n> Download and installation of torrent box programs \e[0m\n" &&
-  cd ~
+  cd /home/pi
 
   # OpenVPN:  program
-  cd ~
+  cd /home/pi
   echo -e '\nDownloading and installing program:  OpenVPN' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  OpenVPN \e[0m" &&
   do_with_root apt-get install openvpn -y >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1904,9 +1903,9 @@ do_torbox_programs() {
   # Deluge:  program
   echo -e '\nDownloading and installing program:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Deluge \e[0m" &&
-  do_with_root touch /var/log/deluged.log >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root touch /var/log/deluge-web.log >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown pi:pi /var/log/deluge* >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root touch /var/log/deluged.log &&
+  do_with_root touch /var/log/deluge-web.log &&
+  do_with_root chown pi:pi /var/log/deluge* &&
   do_with_root apt-get install deluged -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root apt-get install deluge-webui -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root apt-get install deluge-console -y >> /var/log/rpi-config_install.log 2>&1 &&
@@ -1914,7 +1913,7 @@ do_torbox_programs() {
   # Deluge:  services
   echo -e '\nCreating service for:  Deluge' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
-  cd ~
+  cd /home/pi
   cat > deluge.service << EOF
   [Unit]
   Description=Deluge Bittorrent Client Daemon
@@ -1937,7 +1936,7 @@ EOF
 
   echo -e '\nCreating service for:  Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
-  cd ~
+  cd /home/pi
   cat > deluge-web.service << EOF
   [Unit]
   Description=Deluge Bittorrent Client Web Interface
@@ -1958,10 +1957,10 @@ EOF
 
   echo -e '\nStarting service:  Deluge + Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Deluge + Deluge-Web \e[0m" &&
-  do_with_root systemctl enable deluge >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start deluge >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl enable deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl enable deluge &&
+  sudo systemctl start deluge &&
+  sudo systemctl enable deluge-web &&
+  sudo systemctl start deluge-web &&
 
   # Jackett:  program
   echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
@@ -1969,12 +1968,12 @@ EOF
   cd /home/pi/Downloads
   wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/Jackett >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Jackett &&
 
   # Jackett:  service
   echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
-  cd ~
+  cd /home/pi
   cat > jackett.service << EOF
   [Unit]
   Description=Jackett Daemon
@@ -1995,8 +1994,8 @@ EOF
 
   echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
-  do_with_root systemctl enable jackett >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start jackett >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl enable jackett &&
+  sudo systemctl start jackett &&
 
   # Sonarr:  program
   echo -e '\nDownloading and installing program:  Sonarr' >> /var/log/rpi-config_install.log &&
@@ -2009,12 +2008,12 @@ EOF
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Sonarr \e[0m" &&
   do_with_root apt-get install nzbdrone -y >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/NzbDrone >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/NzbDrone &&
 
   # Sonarr:  sevice
   echo -e '\nCreating service for:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
-  cd ~
+  cd /home/pi
   cat > sonarr.service << EOF
   [Unit]
   Description=Sonarr Daemon
@@ -2036,8 +2035,8 @@ EOF
 
   echo -e '\nStarting service:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
-  do_with_root systemctl enable sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl enable sonarr.service &&
+  sudo systemctl start sonarr.service &&
 
   # Radarr:  program
   echo -e '\nDownloading and installing program:  Radarr' >> /var/log/rpi-config_install.log &&
@@ -2045,7 +2044,7 @@ EOF
   cd /home/pi/Downloads
   do_with_root curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 ) >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Radarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/Radarr >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Radarr &&
 
   # Radarr:  service
   echo -e '\nCreating service for:  Radarr' >> /var/log/rpi-config_install.log &&
@@ -2071,8 +2070,8 @@ EOF
 
   echo -e '\nStarting service:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
-  do_with_root systemctl enable radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl enable radarr.service &&
+  sudo systemctl start radarr.service &&
 
   # Lidarr:  program
   echo -e '\nDownloading and installing program:  Lidarr' >> /var/log/rpi-config_install.log &&
@@ -2080,7 +2079,7 @@ EOF
   cd /home/pi/Downloads
   do_with_root wget https://github.com/lidarr/Lidarr/releases/download/v0.3.1.471/Lidarr.develop.0.3.1.471.linux.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root tar -xzf Lidarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root chown -Rh pi:pi /opt/Lidarr >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Lidarr &&
 
   # Lidarr:  service
   echo -e '\nCreating service for:  Lidarr' >> /var/log/rpi-config_install.log &&
@@ -2105,11 +2104,11 @@ EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
-  do_with_root systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root systemctl start lidarr.service >> /var/log/rpi-config_install.log 2>&1
+  sudo systemctl enable lidarr.service &&
+  sudo systemctl start lidarr.service
 
   # Ombi:  program
-  #cd ~
+  #cd /home/pi
   #echo -e '\nDownloading and installing program:  Ombi' >> /var/log/rpi-config_install.log &&
   #echo -e "\e[0;96m> Adding package to sources.list for:\e[0;92m  Ombi \e[0m" &&
   #echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2120,13 +2119,13 @@ EOF
   #sudo apt-get install ombi -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Organizr:  program
-  #cd ~
+  #cd /home/pi
   #echo -e '\nDownloading and installing program:  Organizr' >> /var/log/rpi-config_install.log &&
   #echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Organizr \e[0m" &&
   #do_with_root git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller >> /var/log/rpi-config_install.log 2>&1 &&
   #cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
   #do_with_root bash ou_installer.sh &&
-  #cd ~
+  #cd /home/pi
 }
 
 do_torbox_maintenance_programs() {
@@ -2134,7 +2133,7 @@ do_torbox_maintenance_programs() {
   echo -e "\e[0;93m> Download and Installation of maintenance utility programs \e[0m\n" &&
 
   # Midnight Commander
-  cd ~
+  cd /home/pi
   echo -e '\nDownloading and installing program:  Midnight Commander' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Midnight Commander \e[0m" &&
   do_with_root apt-get install mc -y >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2145,7 +2144,7 @@ do_torbox_maintenance_programs() {
   cd /usr/local/bin
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
   do_with_root easy_install speedtest-cli >> /var/log/rpi-config_install.log 2>&1
-  cd ~
+  cd /home/pi
 
   # Cloud Commander
 }
