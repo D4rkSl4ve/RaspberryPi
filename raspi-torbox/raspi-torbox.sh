@@ -2209,11 +2209,11 @@ do_torbox_preassigned_settings() {
     cd /home/pi/.config/NzbDrone &&
     rm config.xml && rm *.db* &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O /home/pi/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/NzbDrone/config.xml &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/config.xml &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O /home/pi/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
     sudo systemctl start sonarr &&
     sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
@@ -2225,11 +2225,11 @@ do_torbox_preassigned_settings() {
     cd /home/pi/.config/Radarr &&
     rm config.xml && rm *.db* &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/config.xml -O /home/pi/.config/Radarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/Radarr/config.xml &&
+    sudo chmod 644 /home/pi/.config/Radarr/config.xml &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db -O /home/pi/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/Radarr/nzbdrone.db &&
+    sudo chmod 644 /home/pi/.config/Radarr/nzbdrone.db &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O /home/pi/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/Radarr/nzbdrone.db-journal &&
+    sudo chmod 644 /home/pi/.config/Radarr/nzbdrone.db-journal &&
     sudo systemctl start radarr &&
     sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
@@ -2242,9 +2242,9 @@ do_torbox_preassigned_settings() {
     cd /home/pi/.config/Lidarr &&
     rm config.xml && rm *.db* &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O /home/pi/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/Lidarr/config.xml &&
+    sudo chmod 644 /home/pi/.config/Lidarr/config.xml &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O /home/pi/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log 2>&1 &&
-    chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
+    sudo chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
     sudo systemctl start lidarr &&
     sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m"
