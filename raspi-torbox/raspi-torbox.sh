@@ -1724,6 +1724,11 @@ do_lan_eth0_rpi_settings() {
     echo static domain_name_servers=$NEW_ROUTER 8.8.8.8 fd51:42f8:caae:d92e::1 >> /etc/dhcpcd.conf
     sed -i "s/#   Port 22/   Port $NEW_SSH/" /etc/ssh/ssh_config
     sed -i "s/#Port 22/Port $NEW_SSH/" /etc/ssh/sshd_config
+    echo -e "\nHostname:  $NEW_HOSTNAME" >> /var/log/rpi-config_install.log &&
+    echo -e "\nStatic IP:  $NEW_STATICIP" >> /var/log/rpi-config_install.log &&
+    echo -e "\nGateway/Router:  $NEW_ROUTER" >> /var/log/rpi-config_install.log &&
+    echo -e "\nSSH Port #:  $NEW_SSH" >> /var/log/rpi-config_install.log &&
+
     ASK_TO_REBOOT=1
   fi
 }
