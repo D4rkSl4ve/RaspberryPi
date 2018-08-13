@@ -27,7 +27,7 @@ do_with_root() {
 # Sonarr
 echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
 echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Sonarr \e[0m" &&
-sudo systemctl stop sonarr >> /var/log/rpi-config_install.log 2>&1 &&
+sudo systemctl stop sonarr >> /var/log/rpi-config_install.log 2>&1
 #cd /home/pi/.config/NzbDrone >> /var/log/rpi-config_install.log &&
 #rm config.xml && rm *.db* >> /var/log/rpi-config_install.log 2>&1 &&
 #wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O /home/pi/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
