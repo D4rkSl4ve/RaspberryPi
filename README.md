@@ -5,7 +5,8 @@
 ```
 sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/development/raspi-torbox/raspi-torbox.sh)" root
 
-sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/development/raspi-torbox/test.sh)" root
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/development/raspi-torbox/test1.sh)" root
+https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/development/raspi-torbox/test2.sh)" root
 ```
 ## Notes/Comments
 ```
