@@ -47,7 +47,7 @@ if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno 
   sed -i 's+"UpdatePrerelease": false,+"UpdatePrerelease": true,+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start jackett &&
   sudo systemctl status jackett >> /var/log/rpi-config_install.log
-  
+
       else
         return 0
     fi
