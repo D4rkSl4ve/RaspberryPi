@@ -11,7 +11,7 @@ sudo chown -Rh pi:pi /opt/Jackett &&
 # Jackett:  service
 echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
 echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
-cd /home/pi
+cd /home/pi/Downloads
 cat > jackett.service << EOF
 [Unit]
 Description=Jackett Daemon
