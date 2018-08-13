@@ -2164,8 +2164,6 @@ do_torbox_maintenance_programs() {
 
 do_torbox_preassigned_settings() {
   if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno "
-  Has the following criteria been met?
-
     • Rebooted after running the 'First Time Boot'
     • Installed the 'Requirement Packages'
     • Installed the 'TorBox Programs'
@@ -2177,7 +2175,10 @@ do_torbox_preassigned_settings() {
       - Sonarr  (torboxIP:8989)
       - Radarr  (torboxIP:7878)
       - Lidarr  (torboxIP:8686)
-  " 20 80) then
+
+
+                      Has the following criteria been met?
+      " 20 85) then
 
     echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
