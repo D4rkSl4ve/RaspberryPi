@@ -2177,10 +2177,7 @@ do_torbox_preassigned_settings() {
     echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
     do_with_root systemctl stop jackett >> /var/log/rpi-config_install.log &&
-    cd ~/.config/Jackett >> /var/log/rpi-config_install.log &&
-    rm ServerConfig.json >> /var/log/rpi-config_install.log &&
-    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/ServerConfig.json -O ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
-    chmod 644 ~/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
+    sed -i 's+"BasePathOverride": "",+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log &&
     do_with_root systemctl start jackett >> /var/log/rpi-config_install.log &&
 
     # Sonarr
