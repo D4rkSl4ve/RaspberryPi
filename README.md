@@ -25,3 +25,4 @@ do_torbox_programs_preassgined_settings() {}
 ## To-Do list
 - check all preassigned settings
 - finish whiptail menu for preassigned Settings
+- make menus as checklist, so multiple actions can happen
