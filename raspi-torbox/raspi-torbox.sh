@@ -1763,7 +1763,7 @@ do_exit() {
 
 do_update() {
   echo -e "\e[0;96m\n> Updating package(s) and apt repositories... \e[0m\n" &&
-  apt-get -qq update &&
+  apt-get -qq update >> /var/log/rpi-config_install.log 2>&1 &&
   # apt-get -qq install raspi-config -y &&
   # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
   sleep 5 &&
@@ -1772,7 +1772,7 @@ do_update() {
 
 do_upgrade() {
   echo -e "\e[0;96m\n> Upgrading package(s) and application(s)... \e[0m\n" &&
-  do_with_root apt-get -qq upgrade -y &&
+  do_with_root apt-get -qq upgrade -y >> /var/log/rpi-config_install.log 2>&1 &&
   # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
   sleep 5 &&
   return 0
