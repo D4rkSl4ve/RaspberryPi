@@ -2133,7 +2133,7 @@ EOF
   #do_with_root bash ou_installer.sh &&
   #cd /home/pi
 
-ASK_TO_REBOOT=1
+  ASK_TO_REBOOT=1
 }
 
 do_torbox_maintenance_programs() {
