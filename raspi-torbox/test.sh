@@ -6,7 +6,7 @@ echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m
 sudo systemctl stop jackett &&
 sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
 sed -i 's+"UpdatePrerelease": false,+"UpdatePrerelease": true,+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
-mkdir -m755 /home/pi/.config/Indexers && cd /home/pi/.config/Jackett/Indexers &&
+mkdir -m755 /home/pi/.config/Jackett/Indexers && cd /home/pi/.config/Jackett/Indexers &&
 wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/eztv.json &&
 wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/rarbg.json &&
 wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/thepiratebay.json &&
