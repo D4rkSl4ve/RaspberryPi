@@ -2186,6 +2186,7 @@ do_torbox_preassigned_settings() {
     sudo mv /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py-backup >> /var/log/rpi-config_install.log 2>&1 &&
     sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo sed -i 's+""show_session_speed": false,+"show_session_speed": true,+' /root/.config/deluge/web.conf >> /var/log/rpi-config_install.log 2>&1 &&
     sudo systemctl start deluge && do_with_root systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
 
     # Jackett
