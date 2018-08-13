@@ -2111,7 +2111,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   sudo systemctl enable lidarr.service &&
   sudo systemctl start lidarr.service &&
-  sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
+  sudo systemctl status lidarr >> /var/log/rpi-config_install.log
 
   # Ombi:  program
   #cd /home/pi
