@@ -9,6 +9,9 @@ ASK_TO_REBOOT=0
 BLACKLIST=/etc/modprobe.d/raspi-blacklist.conf
 CONFIG=/boot/config.txt
 
+sudo touch /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
+sudo chown pi:pi /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
+
 # Execute a command as root (or sudo)
 do_with_root() {
     # already root? "Just do it" (tm).
@@ -1634,8 +1637,8 @@ nonint() {
 
 do_first_time_boot_menu() {
   echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
-  do_with_root touch /var/log/rpi-config_install.log
-  do_with_root chown pi:pi /var/log/rpi-config_install.log
+  # do_with_root touch /var/log/rpi-config_install.log
+  # do_with_root chown pi:pi /var/log/rpi-config_install.log
   echo -e `date`'\nCreating install log file at /var/log/rpi-config_install.log' >> /var/log/rpi-config_install.log &&
   echo -e '\nFirst boot initialization for torrent box installation\n'`date` >> /var/log/rpi-config_install.log &&
   while true; do
@@ -2466,15 +2469,15 @@ if [ "$INTERACTIVE" = True ]; then
     elif [ $RET -eq 0 ]; then
       if is_pi ; then
         case "$FUN" in
-          1\ *) do_first_time_boot_menu ;;
-          2\ *) do_torbox_requirement_packages ;;
-          3\ *) do_torbox_directories && do_torbox_programs ;;
-          4\ *) do_torbox_maintenance_programs ;;
-          5\ *) do_torbox_preassigned_settings ;;
-          6\ *) do_future_settings ;;
-          7\ *) do_update && do_upgrade ;;
-          8\ *) do_reboot ;;
-          9\ *) do_raspi_config_menu ;;
+          1\ *) echo -e '\nFirst Time Boot activate\n'`date` >> /var/log/rpi-config_install.log && do_first_time_boot_menu ;;
+          2\ *) echo -e '\nRequirement Packages activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_requirement_packages ;;
+          3\ *) echo -e '\nTorBox Programs activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_directories && do_torbox_programs ;;
+          4\ *) echo -e '\nMaintenance Utilities activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_maintenance_programs ;;
+          5\ *) echo -e '\nPreassigned Settings activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_preassigned_settings ;;
+          6\ *) echo -e '\nFuture activate\n'`date` >> /var/log/rpi-config_install.log && do_future_settings ;;
+          7\ *) echo -e '\nUpdate\Upgrade activate\n'`date` >> /var/log/rpi-config_install.log && do_update && do_upgrade ;;
+          8\ *) echo -e '\nReboot RPi activate\n'`date` >> /var/log/rpi-config_install.log && do_reboot ;;
+          9\ *) echo -e '\nRaspi-Config Menu activate\n'`date` >> /var/log/rpi-config_install.log && do_raspi_config_menu ;;
           *) whiptail --msgbox "Programmer error: unrecognized option" 30 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 30 60 1
       else
