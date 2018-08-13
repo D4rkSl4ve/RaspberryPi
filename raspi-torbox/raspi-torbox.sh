@@ -2226,14 +2226,15 @@ do_torbox_preassigned_settings() {
     # lidarr
     echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Lidarr \e[0m" &&
-    sudo systemctl stop lidarr &&
+    # removed the && from both stop/start for testing
+    sudo systemctl stop lidarr
     cd /home/pi/.config/Lidarr &&
     rm config.xml && rm *.db* &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O /home/pi/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Lidarr/config.xml &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O /home/pi/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
-    sudo systemctl start lidarr &&
+    sudo systemctl start lidarr
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m"
 
     ASK_TO_REBOOT=1
