@@ -1738,6 +1738,17 @@ do_reboot() {
   return 0
 }
 
+do_reboot_reminder() {
+  if [ $ASK_TO_REBOOT -eq 1 ]; then
+    whiptail --yesno "Rembember to reboot the system for changes to take effect.\nWould you like to reboot now?\nReconnect in 15 seconds." 20 60 3
+    if [ $? -eq 0 ]; then # yes
+      sync
+      reboot
+    fi
+  fi
+  return 0
+}
+
 do_exit() {
     if [ $ASK_TO_REBOOT -eq 1 ]; then
     whiptail --yesno "Would you like to reboot now?  Reconnect in 15 seconds." 20 60 2
@@ -2184,15 +2195,16 @@ do_torbox_preassigned_settings() {
     echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Sonarr \e[0m" &&
     do_with_root systemctl stop sonarr >> /var/log/rpi-config_install.log &&
-    cd ~/.config/NzbDrone >> /var/log/rpi-config_install.log &&
+    cd /home/pi/.config/NzbDrone >> /var/log/rpi-config_install.log &&
     rm config.xml && rm *.db* >> /var/log/rpi-config_install.log &&
-    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
-    chmod 644 ~/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
-    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
-    chmod 644 ~/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
-    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
-    chmod 644 ~/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O /home/pi/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
+    chmod 644 /home/pi/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O /home/pi/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
+    chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
     do_with_root systemctl start sonarr >> /var/log/rpi-config_install.log &&
+    # The API Key has to be reset at Settings/General, Generate New API KEYMAP
 
     # Radarr
     echo -e '\nDownloading and replacing file(s) for:  Radarr' >> /var/log/rpi-config_install.log &&
@@ -2207,6 +2219,7 @@ do_torbox_preassigned_settings() {
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
     chmod 644 ~/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log &&
     do_with_root systemctl start radarr >> /var/log/rpi-config_install.log &&
+    # The API Key has to be reset at Settings/General, Generate New API KEYMAP
 
     # lidarr
     echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
@@ -2218,15 +2231,15 @@ do_torbox_preassigned_settings() {
     chmod 644 ~/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
     chmod 644 ~/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log &&
-    # wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db-journal -O ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
-    # chmod 644 ~/.config/Lidarr/lidarr.db-journal >> /var/log/rpi-config_install.log &&
     do_with_root systemctl start lidarr >> /var/log/rpi-config_install.log &&
+    # The API Key has to be reset at Settings/General, Generate New API KEYMAP
 
     ASK_TO_REBOOT=1
 
     else
       return 0
   fi
+  do_reboot_reminder
 }
 
 do_future_settings() {
