@@ -11,6 +11,7 @@ CONFIG=/boot/config.txt
 
 sudo touch /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
 sudo chown pi:pi /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
+echo -e 'Creating install log file at /var/log/rpi-config_install.log\n'`date` >> /var/log/rpi-config_install.log &&
 
 # Execute a command as root (or sudo)
 do_with_root() {
@@ -1637,9 +1638,6 @@ nonint() {
 
 do_first_time_boot_menu() {
   echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
-  # do_with_root touch /var/log/rpi-config_install.log
-  # do_with_root chown pi:pi /var/log/rpi-config_install.log
-  echo -e `date`'\nCreating install log file at /var/log/rpi-config_install.log' >> /var/log/rpi-config_install.log &&
   echo -e '\nFirst boot initialization for torrent box installation\n'`date` >> /var/log/rpi-config_install.log &&
   while true; do
     FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
