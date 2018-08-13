@@ -11,7 +11,6 @@ sudo chown -Rh pi:pi /opt/Jackett &&
 # Jackett:  service
 echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
 echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
-cd /home/pi
 cat > jackett.service << EOF
 [Unit]
 Description=Jackett Daemon
@@ -32,6 +31,6 @@ sudo mv jackett.service /lib/systemd/system/jackett.service
 
 echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
 echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
-sudo systemctl enable jackett >> /var/log/rpi-config_install.log &&
+sudo systemctl enable jackett >> /var/log/rpi-config_install.log 2>&1 &&
 sudo systemctl start jackett &&
 sudo systemctl status jackett >> /var/log/rpi-config_install.log
