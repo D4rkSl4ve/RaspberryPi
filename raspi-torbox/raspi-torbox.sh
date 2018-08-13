@@ -2191,6 +2191,8 @@ do_torbox_preassigned_settings() {
     sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo sed -i 's+""show_session_speed": false,+"show_session_speed": true,+' /root/.config/deluge/web.conf >> /var/log/rpi-config_install.log 2>&1 &&
     sudo systemctl start deluge && sudo systemctl start deluge-web &&
+    sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
+    sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
 
     # Jackett
     echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
@@ -2198,6 +2200,7 @@ do_torbox_preassigned_settings() {
     sudo systemctl stop jackett &&
     sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
     sudo systemctl start jackett &&
+    sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
 
     # Sonarr
     echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
@@ -2212,6 +2215,7 @@ do_torbox_preassigned_settings() {
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
     sudo systemctl start sonarr &&
+    sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
 
     # Radarr
@@ -2227,6 +2231,7 @@ do_torbox_preassigned_settings() {
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O /home/pi/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Radarr/nzbdrone.db-journal &&
     sudo systemctl start radarr &&
+    sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
 
     # lidarr
@@ -2241,6 +2246,7 @@ do_torbox_preassigned_settings() {
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O /home/pi/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
     sudo systemctl start lidarr &&
+    sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m"
 
     ASK_TO_REBOOT=1
