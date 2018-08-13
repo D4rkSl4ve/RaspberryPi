@@ -9,9 +9,6 @@ ASK_TO_REBOOT=0
 BLACKLIST=/etc/modprobe.d/raspi-blacklist.conf
 CONFIG=/boot/config.txt
 
-sudo touch /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
-sudo chown pi:pi /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
-
 # Execute a command as root (or sudo)
 do_with_root() {
     # already root? "Just do it" (tm).
