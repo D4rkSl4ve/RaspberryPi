@@ -1962,9 +1962,9 @@ EOF
 
   echo -e '\nStarting service:  Deluge + Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Deluge + Deluge-Web \e[0m" &&
-  sudo systemctl enable deluge >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable deluge >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start deluge &&
-  sudo systemctl enable deluge-web >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable deluge-web
   sudo systemctl start deluge-web &&
   sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
   sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
