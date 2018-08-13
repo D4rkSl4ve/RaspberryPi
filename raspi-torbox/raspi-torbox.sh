@@ -1961,6 +1961,8 @@ EOF
   sudo systemctl start deluge &&
   sudo systemctl enable deluge-web &&
   sudo systemctl start deluge-web &&
+  sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
+  sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
 
   # Jackett:  program
   echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
@@ -1996,6 +1998,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
   sudo systemctl enable jackett &&
   sudo systemctl start jackett &&
+  sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
 
   # Sonarr:  program
   echo -e '\nDownloading and installing program:  Sonarr' >> /var/log/rpi-config_install.log &&
@@ -2037,6 +2040,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
   sudo systemctl enable sonarr.service &&
   sudo systemctl start sonarr.service &&
+  sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
 
   # Radarr:  program
   echo -e '\nDownloading and installing program:  Radarr' >> /var/log/rpi-config_install.log &&
@@ -2072,6 +2076,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
   sudo systemctl enable radarr.service &&
   sudo systemctl start radarr.service &&
+  sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
 
   # Lidarr:  program
   echo -e '\nDownloading and installing program:  Lidarr' >> /var/log/rpi-config_install.log &&
@@ -2105,7 +2110,8 @@ EOF
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   sudo systemctl enable lidarr.service &&
-  sudo systemctl start lidarr.service
+  sudo systemctl start lidarr.service &&
+  sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
 
   # Ombi:  program
   #cd /home/pi
@@ -2172,7 +2178,7 @@ do_torbox_preassigned_settings() {
     # Deluge
     echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
-    sudo systemctl stop deluge && sudo systemctl stop deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl stop deluge && sudo systemctl stop deluge-web &&
     sudo wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/deluge/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
     sudo chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
     sudo rm /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log 2>&1 &&
@@ -2184,14 +2190,14 @@ do_torbox_preassigned_settings() {
     sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
     sudo sed -i 's+""show_session_speed": false,+"show_session_speed": true,+' /root/.config/deluge/web.conf >> /var/log/rpi-config_install.log 2>&1 &&
-    sudo systemctl start deluge && sudo systemctl start deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl start deluge && sudo systemctl start deluge-web &&
 
     # Jackett
     echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
-    sudo systemctl stop jackett >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl stop jackett &&
     sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
-    sudo systemctl start jackett >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl start jackett &&
 
     # Sonarr
     echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
@@ -2205,7 +2211,7 @@ do_torbox_preassigned_settings() {
     chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
-    sudo systemctl start sonarr
+    sudo systemctl start sonarr &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
 
     # Radarr
@@ -2227,14 +2233,14 @@ do_torbox_preassigned_settings() {
     echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
     echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Lidarr \e[0m" &&
     # removed the && from both stop/start for testing
-    sudo systemctl stop lidarr
+    sudo systemctl stop lidarr &&
     cd /home/pi/.config/Lidarr &&
     rm config.xml && rm *.db* &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O /home/pi/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Lidarr/config.xml &&
     wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O /home/pi/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log 2>&1 &&
     chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
-    sudo systemctl start lidarr
+    sudo systemctl start lidarr &&
     echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m"
 
     ASK_TO_REBOOT=1
