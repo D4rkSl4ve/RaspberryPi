@@ -1962,9 +1962,9 @@ EOF
 
   echo -e '\nStarting service:  Deluge + Deluge-Web' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Deluge + Deluge-Web \e[0m" &&
-  sudo systemctl enable deluge &&
+  sudo systemctl enable deluge >> /var/log/rpi-config_install.log &&
   sudo systemctl start deluge &&
-  sudo systemctl enable deluge-web &&
+  sudo systemctl enable deluge-web >> /var/log/rpi-config_install.log &&
   sudo systemctl start deluge-web &&
   sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
   sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
@@ -2001,7 +2001,7 @@ EOF
 
   echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
-  sudo systemctl enable jackett &&
+  sudo systemctl enable jackett >> /var/log/rpi-config_install.log &&
   sudo systemctl start jackett &&
   sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
 
@@ -2043,7 +2043,7 @@ EOF
 
   echo -e '\nStarting service:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
-  sudo systemctl enable sonarr.service &&
+  sudo systemctl enable sonarr.service >> /var/log/rpi-config_install.log &&
   sudo systemctl start sonarr.service &&
   sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
 
@@ -2079,7 +2079,7 @@ EOF
 
   echo -e '\nStarting service:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
-  sudo systemctl enable radarr.service &&
+  sudo systemctl enable radarr.service >> /var/log/rpi-config_install.log &&
   sudo systemctl start radarr.service &&
   sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
 
@@ -2114,7 +2114,7 @@ EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
-  sudo systemctl enable lidarr.service &&
+  sudo systemctl enable lidarr.service >> /var/log/rpi-config_install.log &&
   sudo systemctl start lidarr.service &&
   sudo systemctl status lidarr >> /var/log/rpi-config_install.log
 
