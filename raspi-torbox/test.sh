@@ -5,8 +5,8 @@
       echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
       cd /home/pi/Downloads
       wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
-      do_with_root tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
-      do_with_root chown -Rh pi:pi /opt/Jackett &&
+      sudo tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+      sudo chown -Rh pi:pi /opt/Jackett &&
 
       # Jackett:  service
       echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
@@ -28,7 +28,7 @@
       [Install]
       WantedBy=multi-user.target
       EOF
-      do_with_root mv jackett.service /lib/systemd/system/jackett.service
+      sudo mv jackett.service /lib/systemd/system/jackett.service
 
       echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
       echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
