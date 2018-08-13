@@ -2111,7 +2111,7 @@ EOF
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
   sudo systemctl enable lidarr.service &&
   sudo systemctl start lidarr.service &&
-  sudo systemctl status lidarr >> /var/log/rpi-config_install.log
+  sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
 
   # Ombi:  program
   #cd /home/pi
@@ -2132,6 +2132,8 @@ EOF
   #cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
   #do_with_root bash ou_installer.sh &&
   #cd /home/pi
+
+ASK_TO_REBOOT=1
 }
 
 do_torbox_maintenance_programs() {
