@@ -9,6 +9,10 @@ ASK_TO_REBOOT=0
 BLACKLIST=/etc/modprobe.d/raspi-blacklist.conf
 CONFIG=/boot/config.txt
 
+sudo touch /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
+sudo chown pi:pi /var/log/rpi-config_install.log # Install log file for Raspi-TorBox
+echo -e 'Creating install log file at /var/log/rpi-config_install.log\n'`date` >> /var/log/rpi-config_install.log &&
+
 # Execute a command as root (or sudo)
 do_with_root() {
     # already root? "Just do it" (tm).
@@ -1028,9 +1032,9 @@ do_boot_wait() {
   if [ $RET -eq 0 ]; then
     mkdir -p /etc/systemd/system/dhcpcd.service.d/
     cat > /etc/systemd/system/dhcpcd.service.d/wait.conf << EOF
-[Service]
-ExecStart=
-ExecStart=/usr/lib/dhcpcd5/dhcpcd -q -w
+  [Service]
+  ExecStart=
+  ExecStart=/usr/lib/dhcpcd5/dhcpcd -q -w
 EOF
     STATUS=enabled
   elif [ $RET -eq 1 ]; then
@@ -1135,9 +1139,9 @@ do_rgpio() {
   if [ $RET -eq 0 ]; then
     mkdir -p /etc/systemd/system/pigpiod.service.d/
     cat > /etc/systemd/system/pigpiod.service.d/public.conf << EOF
-[Service]
-ExecStart=
-ExecStart=/usr/bin/pigpiod
+  [Service]
+  ExecStart=
+  ExecStart=/usr/bin/pigpiod
 EOF
     STATUS=enabled
   elif [ $RET -eq 1 ]; then
@@ -1350,15 +1354,6 @@ do_net_names () {
     whiptail --msgbox "Predictable network interface names are $STATUS" 20 60 1
   fi
  }
-
-do_update() {
-  echo -e "\e[0;96m> Updating apt repositories...\e[0m"
-  apt -qq update &&
-  apt -qq install raspi-config -y &&
-  echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
-  sleep 5 &&
-  return 0
-}
 
 do_audio() {
   if [ "$INTERACTIVE" = True ]; then
@@ -1641,15 +1636,101 @@ nonint() {
 # Rev 1.0 7/27/2018
 #
 
-do_exit() {
-    if [ $ASK_TO_REBOOT -eq 1 ]; then
-    whiptail --yesno "Would you like to reboot now?  Reconnect in 15 seconds." 20 60 2
-    if [ $? -eq 0 ]; then # yes
-      sync
-      reboot
-    fi
+do_first_time_boot_menu() {
+  echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
+  echo -e '\nFirst boot initialization for torrent box installation\n'`date` >> /var/log/rpi-config_install.log &&
+  while true; do
+    FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
+      "F1 Swap File" "Make Swap File 2.0Gb Size" \
+      "F2 Expand Filesystem" "Ensures that all of the SD card storage is available to the OS" \
+      "F3 Change User Password" "Change password for the current user" \
+      "F4 LAN Settings 'eth0'" "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" \
+      "F5 Wi-fi Setup" "Wi-fi SSID, Passphrase, and Country setting" \
+      "F6 Localisation Options" "Set up language and regional settings to match your location" \
+      "F9 Reboot RPi" "Reboot RPi to take effect" \
+      3>&1 1>&2 2>&3)
+      RET=$?
+      if [ $RET -eq 1 ]; then
+        do_raspi_config_menu
+      elif [ $RET -eq 0 ]; then
+        case "$FUN" in
+          F1\ *) echo -e '\nSwap File activate\n'`date` >> /var/log/rpi-config_install.log && do_swap_change ;;
+          F2\ *) echo -e '\nExpand Filesystem activate\n'`date` >> /var/log/rpi-config_install.log && do_expand_rootfs ;;  # raspi-config
+          F3\ *) echo -e '\nChange User Password activate\n'`date` >> /var/log/rpi-config_install.log && do_change_pass ;;  # raspi-config
+          F4\ *) echo -e '\nLAN Settings activate\n'`date` >> /var/log/rpi-config_install.log && do_lan_eth0_rpi_settings ;;
+          F5\ *) echo -e '\nWi-fi Setup activate\n'`date` >> /var/log/rpi-config_install.log && do_wifi_ssid_passphrase && do_wifi_country ;;  # raspi-config
+          F6\ *) echo -e '\nLocalisation Options activate\n'`date` >> /var/log/rpi-config_install.log && do_change_locale && do_change_timezone && do_configure_keyboard ;; # raspi-config
+          F9\ *) echo -e '\nFirst reboot activate\n'`date` >> /var/log/rpi-config_install.log && do_reboot ;;
+          *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
+        esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+    else
+        return 0
+      fi
+    done
+}
+
+do_swap_change() {
+  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root dphys-swapfile setup >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root dphys-swapfile swapon >> /var/log/rpi-config_install.log 2>&1 &&
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "SWAPFILE size has been resized to 1GB.\nThe swapfile will be enlarged upon the next reboot." 20 60 2
   fi
-  exit 0
+  ASK_TO_REBOOT=1
+}
+
+do_lan_eth0_rpi_settings() {
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "Several custom settings will be asked; please make note of them. Hostname, Static IP address, Gateway/Router IP, SSH port." 20 70 1
+  fi
+  # HOSTNAME
+  CURRENT_HOSTNAME=`cat /etc/hostname | tr -d " \t\n\r"`
+  if [ "$INTERACTIVE" = True ]; then
+    NEW_HOSTNAME=$(whiptail --inputbox "Please enter a hostname (ie: RPiTorBox)" 20 60 "$CURRENT_HOSTNAME" 3>&1 1>&2 2>&3)
+  else
+    NEW_HOSTNAME=$1
+    true
+  fi
+  # STATIC IP
+  if [ "$INTERACTIVE" = True ]; then
+    NEW_STATICIP=$(whiptail --inputbox "Please enter a STATIC IP (ie: 192.168.0.60)" 20 60 3>&1 1>&2 2>&3)
+  else
+    NEW_STATICIP=$1
+    true
+  fi
+  # GATEWAY/ROUTER
+  if [ "$INTERACTIVE" = True ]; then
+    NEW_ROUTER=$(whiptail --inputbox "Please enter your Gateway/Router IP (ie: 192.168.0.1)" 20 60 3>&1 1>&2 2>&3)
+  else
+    NEW_ROUTER=$1
+    true
+  fi
+  # SSH PORT
+  if [ "$INTERACTIVE" = True ]; then
+    NEW_SSH=$(whiptail --inputbox "Please enter the SSH port (ie: 2260)" 20 60 3>&1 1>&2 2>&3)
+  else
+    NEW_SSH=$1
+    true
+  fi
+  # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
+  if [ $? -eq 0 ]; then
+    echo $NEW_HOSTNAME > /etc/hostname
+    sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g" /etc/hosts
+    echo '# Static IP Configuration by RPiTorBox' >> /etc/dhcpcd.conf
+    echo interface eth0 >> /etc/dhcpcd.conf
+    echo static ip_address=$NEW_STATICIP/24 >> /etc/dhcpcd.conf
+    echo '#static ip6_address=fd51:42f8:caae:d92e::ff/64' >> /etc/dhcpcd.conf
+    echo static routers=$NEW_ROUTER >> /etc/dhcpcd.conf
+    echo static domain_name_servers=$NEW_ROUTER 8.8.8.8 fd51:42f8:caae:d92e::1 >> /etc/dhcpcd.conf
+    sed -i "s/#   Port 22/   Port $NEW_SSH/" /etc/ssh/ssh_config
+    sed -i "s/#Port 22/Port $NEW_SSH/" /etc/ssh/sshd_config
+    echo -e "\nHostname:  $NEW_HOSTNAME" >> /var/log/rpi-config_install.log &&
+    echo -e "Static IP:  $NEW_STATICIP" >> /var/log/rpi-config_install.log &&
+    echo -e "Gateway/Router:  $NEW_ROUTER" >> /var/log/rpi-config_install.log &&
+    echo -e "SSH Port #:  $NEW_SSH" >> /var/log/rpi-config_install.log &&
+
+    ASK_TO_REBOOT=1
+  fi
 }
 
 do_reboot() {
@@ -1663,17 +1744,41 @@ do_reboot() {
   return 0
 }
 
-do_swap_change() {
-  echo -e "\e[1;96m>  Increasing the SWAP file to 1GB for smoother performance \n\e[0m" &&
-  do_with_root sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile &&
-  do_with_root dphys-swapfile setup &&
-  do_with_root dphys-swapfile swapon &&
-  ASK_TO_REBOOT=1
+do_reboot_reminder() {
+  if [ $ASK_TO_REBOOT -eq 1 ]; then
+    whiptail --yesno "Rembember to reboot the system for changes to take effect.\nWould you like to reboot now?\nReconnect in 15 seconds." 20 60 3
+    if [ $? -eq 0 ]; then # yes
+      sync
+      reboot
+    fi
+  fi
+  return 0
+}
+
+do_exit() {
+    if [ $ASK_TO_REBOOT -eq 1 ]; then
+    whiptail --yesno "Would you like to reboot now?  Reconnect in 15 seconds." 20 60 2
+    if [ $? -eq 0 ]; then # yes
+      sync
+      reboot
+    fi
+  fi
+  exit 0
+}
+
+do_update() {
+  echo -e "\e[0;96m\n> Updating package(s) and apt repositories... \e[0m\n" &&
+  apt-get -qq update >> /var/log/rpi-config_install.log 2>&1 &&
+  # apt-get -qq install raspi-config -y &&
+  # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
+  sleep 5 &&
+  return 0
 }
 
 do_upgrade() {
-  apt upgrade &&
-  echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
+  echo -e "\e[0;96m\n> Upgrading package(s) and application(s)... \e[0m\n" &&
+  do_with_root apt-get -qq upgrade -y >> /var/log/rpi-config_install.log 2>&1 &&
+  # echo -e "\e[0;96m> Sleeping 5 seconds before reloading raspi-config\e[0m\n" &&
   sleep 5 &&
   return 0
 }
@@ -1740,158 +1845,443 @@ do_raspi_config_menu() {
   fi
 }
 
-do_lan_eth0_rpi_settings() {
-  if [ "$INTERACTIVE" = True ]; then
-    whiptail --msgbox "Several custom settings will be asked; please make note of them. Hostname, Static IP address, Gateway/Router IP, SSH port." 20 70 1
-  fi
-  # HOSTNAME
-  CURRENT_HOSTNAME=`cat /etc/hostname | tr -d " \t\n\r"`
-  if [ "$INTERACTIVE" = True ]; then
-    NEW_HOSTNAME=$(whiptail --inputbox "Please enter a hostname (ie: RPiTorBox)" 20 60 "$CURRENT_HOSTNAME" 3>&1 1>&2 2>&3)
-  else
-    NEW_HOSTNAME=$1
-    true
-  fi
-  # STATIC IP
-  if [ "$INTERACTIVE" = True ]; then
-    NEW_STATICIP=$(whiptail --inputbox "Please enter a STATIC IP (ie: 192.168.0.60)" 20 60 3>&1 1>&2 2>&3)
-  else
-    NEW_STATICIP=$1
-    true
-  fi
-  # GATEWAY/ROUTER
-  if [ "$INTERACTIVE" = True ]; then
-    NEW_ROUTER=$(whiptail --inputbox "Please enter your Gateway/Router IP (ie: 192.168.0.1)" 20 60 3>&1 1>&2 2>&3)
-  else
-    NEW_ROUTER=$1
-    true
-  fi
-  # SSH PORT
-  if [ "$INTERACTIVE" = True ]; then
-    NEW_SSH=$(whiptail --inputbox "Please enter the SSH port (ie: 2260)" 20 60 3>&1 1>&2 2>&3)
-  else
-    NEW_SSH=$1
-    true
-  fi
-  # DATA OUTPUT FOR HOSTNAME, STATICIP, ROUTER, SSH PORT
-  if [ $? -eq 0 ]; then
-    echo $NEW_HOSTNAME > /etc/hostname
-    sed -i 's/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g' /etc/hosts
-    echo '# Static IP Configuration by RPiTorBox' >> /etc/dhcpcd.conf
-    echo interface eth0 >> /etc/dhcpcd.conf
-    echo static ip_address=$NEW_STATICIP/24 >> /etc/dhcpcd.conf
-    echo '#static ip6_address=fd51:42f8:caae:d92e::ff/64' >> /etc/dhcpcd.conf
-    echo static routers=$NEW_ROUTER >> /etc/dhcpcd.conf
-    echo static domain_name_servers=$NEW_ROUTER 8.8.8.8 fd51:42f8:caae:d92e::1 >> /etc/dhcpcd.conf
-    sed -i 's/#   Port 22/   Port $NEW_SSH/' /etc/ssh/ssh_config
-    sed -i 's/#Port 22/Port $NEW_SSH/' /etc/ssh/sshd_config
-    ASK_TO_REBOOT=1
-  fi
-}
-
-do_first_time_boot_menu() {
-while true; do
-  FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --menu "First Time Boot Changes (Reboot Required at End)" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
-    "F1 Swap File" "Make Swap File 2.0Gb Size" \
-    "F2 Expand Filesystem" "Ensures that all of the SD card storage is available to the OS" \
-    "F3 Change User Password" "Change password for the current user" \
-	"F4 Localisation Options" "Set up language and regional settings to match your location" \
-	"F5 LAN Settings 'eth0'" "LAN Settings for interface 'eth0': hostname, static IP, gateway router, ssh port" \
-	"F6 Wi-fi" "Wi-fi SSID, Passphrase, and Country setting" \
-	"F9 Reboot RPi" "Reboot RPi to take effect" \
-	3>&1 1>&2 2>&3)
-  RET=$?
-  if [ $RET -eq 1 ]; then
-    do_raspi_config_menu
-  elif [ $RET -eq 0 ]; then
-    case "$FUN" in
-      F1\ *) do_swap_change ;;
-      F2\ *) do_expand_rootfs ;;
-	  F3\ *) do_change_pass ;;
-	  F4\ *) do_change_locale && do_change_timezone && do_configure_keyboard ;;
-	  F5\ *) do_lan_eth0_rpi_settings ;;
-	  F6\ *) do_wifi_ssid_passphrase && do_wifi_country;;
-	  F9\ *) do_reboot ;;
-      *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
-    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
-  else
-      return 0
-  fi
-done
-}
-
-do_make_directories() {
-  echo "\e[0;96m> Making directories needed:\e[0;92m  git \e[0m\n" &&
-  cd ~
-  do_with_root mkdir -m777 Downloads
-  do_with_root mkdir -m777 Music
-  do_with_root mkdir -m777 Videos
-  do_with_root mkdir -m777 Temp
-}
-
-do_requirement_packages() {
-  do_with_root touch /var/log/rpi-config_install.log
-  do_with_root chown pi:pi /var/log/rpi-config_install.log
-  date >> /var/log/rpi-config_install.log
-  echo "Installation of required packages, create folders, and install log file" >> /var/log/rpi-config_install.log &&
-  echo "Creating install log file at /var/log/rpi-config_install.log" >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Installation of required packages, create folders, and install log file \e[0m\n" &&
-  echo -e "\e[0;96m> Creating install log file at \e[0;92m/var/log/rpi-config_install.log \e[0m" &&
-  cd ~
+do_torbox_requirement_packages() {
+  echo -e '\nDownload and installation of required packages, create folders, and install log file\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m\n> Download and installation of required packages, create folders, and install log file \e[0m\n" &&
+  cd /home/pi
 
   # git
-  echo -e "\e[0;96m> Installing package:\e[0;92m  git \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  git' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  git \e[0m" &&
   do_with_root apt-get install git git-core -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # dirmngr
-  echo -e "\e[0;96m> Installing package:\e[0;92m  dirmngr \e[0m"
+  echo -e '\nDownloading and installing package(s):  apt-transport-https dirmngr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  apt-transport-https dirmngr \e[0m"
   do_with_root apt-get install apt-transport-https dirmngr -y >> /var/log/rpi-config_install.log 2>&1 &&
-
-  # mono
-  echo -e "\e[0;96m> Installing package:\e[0;92m  mono-devel and mono-complete \e[0m" &&
+  echo -e "\e[0;96m> Requesting package key:\e[0;92m  mono-project/repo \e[0m" &&
   do_with_root apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF >> /var/log/rpi-config_install.log 2>&1 &&
   echo "deb https://download.mono-project.com/repo/debian stable-raspbianstretch main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
   do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root apt-get install mono-complete -y >> /var/log/rpi-config_install.log 2>&1 &&
+
+  # mono
+  echo -e '\nDownloading and installing:  mono-devel' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mono-devel \e[0m" &&
+  do_with_root apt-get install mono-devel -y >> /var/log/rpi-config_install.log 2>&1
 
   # libcurl
-  echo -e "\e[0;96m> Installing package:\e[0;92m  libcurl4-openssl-dev \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  libcurl4-openssl-dev' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  libcurl4-openssl-dev \e[0m" &&
   do_with_root apt-get install libcurl4-openssl-dev -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # mediainfo
-  echo -e "\e[0;96m> Installing package:\e[0;92m  mediainfo \e[0m" &&
+  echo -e '\nDownloading and installing package(s):  mediainfo' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing package(s):\e[0;92m  mediainfo \e[0m" &&
   do_with_root apt-get install mediainfo -y >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Package(s) Update/Upgrade Required \e[0m" &&
   do_with_root apt-get upgrade -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   ASK_TO_REBOOT=1
 }
 
-do_torbox_programs() {
-  date >> /var/log/rpi-config_install.log
-  echo "Installation of programs for torrent box" >> /var/log/rpi-config_install.log &&
-  echo -e "\e[0;93m> Installation of programs needed for torrent box \e[0m\n" &&
-  cd ~
+do_torbox_directories() {
+  echo -e '\nCreating directoies for Downloads, Music, Videos, Temp\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m\n> Creating directories for:\e[0;92m  Downloads, Music, Videos and Temp \e[0m\n" &&
+  install -d -m 0755 -o pi -g pi /home/pi/Downloads
+  install -d -m 0755 -o pi -g pi /home/pi/Music
+  install -d -m 0755 -o pi -g pi /home/pi/Videos
+  install -d -m 0755 -o pi -g pi /home/pi/Temp
+}
 
-  # OpenVPN
-  cd ~
-  echo -e "\e[0;96m> Installing program:\e[0;92m  OpenVPN \e[0m" &&
+do_torbox_programs() {
+  echo -e '\nDownload and installation of torrent box programs\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m\n> Download and installation of torrent box programs \e[0m\n" &&
+  cd /home/pi
+
+  # OpenVPN:  program
+  cd /home/pi
+  echo -e '\nDownloading and installing program:  OpenVPN' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  OpenVPN \e[0m" &&
   do_with_root apt-get install openvpn -y >> /var/log/rpi-config_install.log 2>&1 &&
 
+  # Deluge:  program
+  echo -e '\nDownloading and installing program:  Deluge' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Deluge \e[0m" &&
+  do_with_root touch /var/log/deluged.log &&
+  do_with_root touch /var/log/deluge-web.log &&
+  do_with_root chown pi:pi /var/log/deluge* &&
+  do_with_root apt-get install deluged -y >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root apt-get install deluge-webui -y >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root apt-get install deluge-console -y >> /var/log/rpi-config_install.log 2>&1 &&
+
+  # Deluge:  services
+  echo -e '\nCreating service for:  Deluge' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge \e[0m" &&
+  cd /home/pi
+  cat > deluge.service << EOF
+  [Unit]
+  Description=Deluge Bittorrent Client Daemon
+  After=network-online.target
+
+  [Service]
+  Type=simple
+  User=root
+  Group=root
+  UMask=000
+  ExecStart=/usr/bin/deluged -d
+  Restart=on-failure
+  # Configures the time to wait before service is stopped forcefully.
+  TimeoutStopSec=300
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  do_with_root mv deluge.service /lib/systemd/system/deluge.service
+
+  echo -e '\nCreating service for:  Deluge-Web' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Deluge-Web \e[0m" &&
+  cd /home/pi
+  cat > deluge-web.service << EOF
+  [Unit]
+  Description=Deluge Bittorrent Client Web Interface
+  After=network-online.target
+
+  [Service]
+  Type=simple
+  User=root
+  Group=root
+  UMask=000
+  ExecStart=/usr/bin/deluge-web
+  Restart=on-failure
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  do_with_root mv deluge-web.service /lib/systemd/system/deluge-web.service
+
+  echo -e '\nStarting service:  Deluge + Deluge-Web' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Starting service:\e[0;92m  Deluge + Deluge-Web \e[0m" &&
+  sudo systemctl enable deluge >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start deluge &&
+  sudo systemctl enable deluge-web >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start deluge-web &&
+  sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
+  sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
+
+  # Jackett:  program
+  echo -e '\nDownloading and installing program:  Jackett' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Jackett \e[0m" &&
+  cd /home/pi/Downloads
+  wget https://github.com/Jackett/Jackett/releases/download/v0.9.41/Jackett.Binaries.Mono.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo tar -zxf Jackett.Binaries.Mono.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo chown -Rh pi:pi /opt/Jackett &&
+
+  # Jackett:  service
+  echo -e '\nCreating service for:  Jackett' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Jackett \e[0m" &&
+  cat > jackett.service << EOF
+  [Unit]
+  Description=Jackett Daemon
+  After=network.target
+
+  [Service]
+  User=pi
+  Restart=always
+  RestartSec=5
+  Type=simple
+  ExecStart=/usr/bin/mono --debug /opt/Jackett/JackettConsole.exe --NoRestart
+  TimeoutStopSec=20
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  sudo mv jackett.service /lib/systemd/system/jackett.service
+
+  echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
+  sudo systemctl enable jackett >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start jackett &&
+  sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
+
+  # Sonarr:  program
+  echo -e '\nDownloading and installing program:  Sonarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Requesting package key:\e[0;92m  Sonarr \e[0m" &&
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FDA5DFFC >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Adding package to sources.list for:\e[0;92m  Sonarr \e[0m" &&
+  echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/sonarr.list >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e '\nPackage(s) Update Required'  >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
+  do_with_root apt-get update -y >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Sonarr \e[0m" &&
+  do_with_root apt-get install nzbdrone -y >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/NzbDrone &&
+
+  # Sonarr:  sevice
+  echo -e '\nCreating service for:  Sonarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Sonarr \e[0m" &&
+  cd /home/pi
+  cat > sonarr.service << EOF
+  [Unit]
+  Description=Sonarr Daemon
+  After=syslog.target network.target
+
+  [Service]
+  User=pi
+  Group=pi
+  Type=simple
+  ExecStart=/usr/bin/mono /opt/NzbDrone/NzbDrone.exe -nobrowser
+  TimeoutStopSec=20
+  KillMode=process
+  Restart=on-failure
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  do_with_root mv sonarr.service /lib/systemd/system/sonarr.service
+
+  echo -e '\nStarting service:  Sonarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
+  sudo systemctl enable sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start sonarr.service &&
+  sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
+
+  # Radarr:  program
+  echo -e '\nDownloading and installing program:  Radarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Radarr \e[0m" &&
+  cd /home/pi/Downloads
+  do_with_root curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 ) >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root tar -xzf Radarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Radarr &&
+
+  # Radarr:  service
+  echo -e '\nCreating service for:  Radarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Radarr \e[0m" &&
+  cat > radarr.service << EOF
+  [Unit]
+  Description=Radarr Daemon
+  After=syslog.target network.target
+
+  [Service]
+  User=pi
+  Group=pi
+  Type=simple
+  ExecStart=/usr/bin/mono /opt/Radarr/Radarr.exe -nobrowser
+  TimeoutStopSec=20
+  KillMode=process
+  Restart=on-failure
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  do_with_root mv radarr.service /lib/systemd/system/radarr.service
+
+  echo -e '\nStarting service:  Radarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
+  sudo systemctl enable radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start radarr.service &&
+  sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
+
+  # Lidarr:  program
+  echo -e '\nDownloading and installing program:  Lidarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Lidarr \e[0m" &&
+  cd /home/pi/Downloads
+  do_with_root wget https://github.com/lidarr/Lidarr/releases/download/v0.3.1.471/Lidarr.develop.0.3.1.471.linux.tar.gz >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root tar -xzf Lidarr.develop.*.linux.tar.gz --directory /opt/ >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root chown -Rh pi:pi /opt/Lidarr &&
+
+  # Lidarr:  service
+  echo -e '\nCreating service for:  Lidarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Creating service for:\e[0;92m  Lidarr \e[0m" &&
+  cat > lidarr.service << EOF
+  [Unit]
+  Description=Lidarr Daemon
+  After=syslog.target network.target
+
+  [Service]
+  User=pi
+  Group=pi
+  Type=simple
+  ExecStart=/usr/bin/mono /opt/Lidarr/Lidarr.exe -nobrowser
+  TimeoutStopSec=20
+  KillMode=process
+  Restart=on-failure
+
+  [Install]
+  WantedBy=multi-user.target
+EOF
+  do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
+  echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
+  sudo systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
+  sudo systemctl start lidarr.service &&
+  sudo systemctl status lidarr >> /var/log/rpi-config_install.log
+
+  # Ombi:  program
+  cd /home/pi
+  echo -e '\nDownloading and installing program:  Ombi' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Adding package to sources.list for:\e[0;92m  Ombi \e[0m" &&
+  echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/develop/ jessie main" | sudo tee "/etc/apt/sources.list.d/ombi.list" >> /var/log/rpi-config_install.log 2>&1 &&
+  wget -qO - https://repo.ombi.turd.me/pubkey.txt | sudo apt-key add - >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Package(s) Update Required \e[0m" &&
+  sudo apt-get update >> /var/log/rpi-config_install.log 2>&1 &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Ombi \e[0m" &&
+  sudo apt-get install ombi -y >> /var/log/rpi-config_install.log 2>&1 &&
+
+  # Organizr:  program
+  cd /home/pi
+  echo -e '\nDownloading and installing program:  Organizr' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Organizr \e[0m" &&
+  do_with_root git clone https://github.com/elmerfdz/OrganizrInstaller /opt/OrganizrInstaller >> /var/log/rpi-config_install.log 2>&1 &&
+  cd /opt/OrganizrInstaller/ubuntu/oui >> /var/log/rpi-config_install.log 2>&1 &&
+  do_with_root bash ou_installer.sh &&
+  cd /home/pi
+
+  ASK_TO_REBOOT=1
+}
+
+do_torbox_maintenance_programs() {
+  echo -e '\nDownload and Installation of maintenance utility programs\n'`date` >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;93m> Download and Installation of maintenance utility programs \e[0m\n" &&
+
   # Midnight Commander
-  cd ~
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Midnight Commander \e[0m" &&
+  cd /home/pi
+  echo -e '\nDownloading and installing program:  Midnight Commander' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Midnight Commander \e[0m" &&
   do_with_root apt-get install mc -y >> /var/log/rpi-config_install.log 2>&1 &&
 
   # Speedtest
-  echo -e "\e[0;96m> Installing program:\e[0;92m  Speedtest \e[0m"
+  echo -e '\nDownloading and installing program:  Speedtest' >> /var/log/rpi-config_install.log &&
+  echo -e "\e[0;96m> Downloading and installing program:\e[0;92m  Speedtest \e[0m" &&
   cd /usr/local/bin
   do_with_root apt-get install python-pip -y >> /var/log/rpi-config_install.log 2>&1 &&
-  do_with_root easy_install speedtest-cli -y >> /var/log/rpi-config_install.log 2>&1
-  cd ~
+  do_with_root easy_install speedtest-cli >> /var/log/rpi-config_install.log 2>&1
+  cd /home/pi
+
+  # Cloud Commander
 }
 
-# END of RPi Torrent Box functions
+do_torbox_preassigned_settings() {
+  if (whiptail --title "Criteria to use preassigned settings" --yesno --defaultno "
+    • Rebooted after running the 'First Time Boot'
+    • Installed the 'Requirement Packages'
+    • Installed the 'TorBox Programs'
+    • Rebooted after installing the 'Required Packages and TorBox Programs'
+    • All the services have been started/opened by their respective port numbers
+      via a local browser  (ie torboxIP:port - 192.168.0.60:8989)
+      - Deluge  (torboxIP:8112)
+      - Jackett (torboxIP:9117)
+      - Sonarr  (torboxIP:8989)
+      - Radarr  (torboxIP:7878)
+      - Lidarr  (torboxIP:8686)
+
+
+                      Has the following criteria been met?
+      " 20 85) then
+
+    echo -e '\nEditing, Download, Replacing, and Installation of preassgined settings\n'`date` >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;93m> Editing, Download, Replacing, and Installation of preassgined settings \e[0m\n" &&
+
+    # Deluge
+    echo -e '\nDownloading and replacing file(s) for:  Deluge' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Deluge \e[0m" &&
+    sudo systemctl stop deluge && sudo systemctl stop deluge-web &&
+    sudo wget https://github.com/D4rkSl4ve/RaspberryPi/raw/master/raspi-torbox/deluge/WebAPI-0.2.1-py2.7.egg -O /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 666 /root/.config/deluge/plugins/WebAPI-0.2.1-py2.7.egg >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo rm /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/core.conf -O /root/.config/deluge/core.conf >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo mv /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js-backup >> /var/log/rpi-config_install.log 2>&1&&
+    sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/deluge-all.js -O /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log 2>&1&&
+    sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/js/deluge-all.js >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo mv /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py-backup >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/deluge/auth.py -O /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /usr/lib/python2.7/dist-packages/deluge/ui/web/auth.py >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo sed -i 's+""show_session_speed": false,+"show_session_speed": true,+' /root/.config/deluge/web.conf >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo systemctl start deluge && sudo systemctl start deluge-web &&
+    sudo systemctl status deluge >> /var/log/rpi-config_install.log &&
+    sudo systemctl status deluge-web >> /var/log/rpi-config_install.log &&
+
+    # Jackett
+    echo -e '\nDownloading and replacing file(s) for:  Jackett' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Jackett \e[0m" &&
+    sudo systemctl stop jackett &&
+    sed -i 's+"BasePathOverride": null,+"BasePathOverride": "/jackett",+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
+    sed -i 's+"UpdatePrerelease": false,+"UpdatePrerelease": true,+' /home/pi/.config/Jackett/ServerConfig.json >> /var/log/rpi-config_install.log 2>&1 &&
+    install -d -m 0755 -o pi -g pi /home/pi/.config/Jackett/Indexers && cd /home/pi/.config/Jackett/Indexers &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/eztv.json >> /var/log/rpi-config_install.log 2>&1 &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/rarbg.json >> /var/log/rpi-config_install.log 2>&1 &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/jackett/Indexers/thepiratebay.json >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chown -R pi:pi /home/pi/.config/Jackett/Indexers/*
+    sudo systemctl start jackett &&
+    sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
+
+    # Sonarr
+    echo -e '\nDownloading and replacing file(s) for:  Sonarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Sonarr \e[0m" &&
+    sudo systemctl stop sonarr &&
+    cd /home/pi/.config/NzbDrone &&
+    rm config.xml && rm *.db* &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/config.xml -O /home/pi/.config/NzbDrone/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/config.xml &&
+    sudo chown pi:pi /home/pi/.config/NzbDrone/config.xml &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db -O /home/pi/.config/NzbDrone/nzbdrone.db >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db &&
+    sudo chown pi:pi /home/pi/.config/NzbDrone/nzbdrone.db &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/sonarr/nzbdrone.db-journal -O /home/pi/.config/NzbDrone/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
+    sudo chown pi:pi /home/pi/.config/NzbDrone/nzbdrone.db-journal &&
+    sudo systemctl start sonarr &&
+    sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
+
+    # Radarr
+    echo -e '\nDownloading and replacing file(s) for:  Radarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Radarr \e[0m" &&
+    sudo systemctl stop radarr &&
+    cd /home/pi/.config/Radarr &&
+    rm config.xml && rm *.db* &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/config.xml -O /home/pi/.config/Radarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/Radarr/config.xml &&
+    sudo chown pi:pi /home/pi/.config/Radarr/config.xml &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db -O /home/pi/.config/Radarr/nzbdrone.db >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/Radarr/nzbdrone.db &&
+    sudo chown pi:pi /home/pi/.config/Radarr/nzbdrone.db &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/radarr/nzbdrone.db-journal -O /home/pi/.config/Radarr/nzbdrone.db-journal >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/Radarr/nzbdrone.db-journal &&
+    sudo chown pi:pi /home/pi/.config/Radarr/nzbdrone.db-journal &&
+    sudo systemctl start radarr &&
+    sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m" &&
+
+    # lidarr
+    echo -e '\nDownloading and replacing file(s) for:  Lidarr' >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> Downloading and replacing file(s) for:\e[0;92m  Lidarr \e[0m" &&
+    sudo systemctl stop lidarr &&
+    cd /home/pi/.config/Lidarr &&
+    rm config.xml && rm *.db* &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/config.xml -O /home/pi/.config/Lidarr/config.xml >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/Lidarr/config.xml &&
+    sudo chown pi:pi /home/pi/.config/Lidarr/config.xml &&
+    wget https://raw.githubusercontent.com/D4rkSl4ve/RaspberryPi/master/raspi-torbox/lidarr/lidarr.db -O /home/pi/.config/Lidarr/lidarr.db >> /var/log/rpi-config_install.log 2>&1 &&
+    sudo chmod 644 /home/pi/.config/Lidarr/lidarr.db &&
+    sudo chown pi:pi /home/pi/.config/Lidarr/lidarr.db &&
+    sudo systemctl start lidarr &&
+    sudo systemctl status lidarr >> /var/log/rpi-config_install.log &&
+    echo -e "\e[0;96m> The \e[0;92mAPI Key has to be reset \e[0;96mat Settings/General, generate New API Key\e[0m"
+
+    ASK_TO_REBOOT=1
+
+    else
+      return 0
+  fi
+  do_reboot_reminder
+}
+
+do_future_settings() {
+  if [ "$INTERACTIVE" = True ]; then
+    whiptail --msgbox "This portion of the the script is not finished yet.\n" 20 60 2
+  fi
+}
 
 # Command line options for non-interactive use
 
@@ -1966,7 +2356,7 @@ do_internationalisation_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_interface_menu() {
@@ -1996,7 +2386,7 @@ do_interface_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_advanced_menu() {
@@ -2024,7 +2414,7 @@ do_advanced_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_boot_menu() {
@@ -2051,7 +2441,7 @@ do_boot_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 do_network_menu() {
@@ -2071,7 +2461,7 @@ do_network_menu() {
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   fi
-do_raspi_config_menu
+  do_raspi_config_menu
 }
 
 # RPi TorBox Interactive use loop
@@ -2084,12 +2474,12 @@ if [ "$INTERACTIVE" = True ]; then
     if is_pi ; then
       FUN=$(whiptail --title "Raspberry Pi Torrent Box Configuration Menu (raspi-torbox)" --backtitle "$(cat /proc/device-tree/model)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
         "1 First Time Boot" "First Time Boot Changes Required (reboot required at end)" \
-        "2 Requirement Packages" "Installation of required packages, create folders, and install log." \
-        "3 TorBox Programs" "Installation of torrent box programs and their services." \
-        "4 Step" "Description" \
-        "5 Step" "Description" \
-        "6 Step" "Description" \
-        "7 Update" "Repository Update and Upgade" \
+        "2 Requirement Packages" "Installation of required packages, create folders, and install log" \
+        "3 TorBox Programs" "Installation of torrent box programs and services" \
+        "4 Maintenance Utilities" "Installation of maintenance utilities" \
+        "5 Preassigned Settings" "Installation of 'Programs' preassigned settings" \
+        "6 Future" "Description" \
+        "7 Update\Upgrade" "Repository Update and Upgade" \
         "8 Reboot RPi" "Reboot RPi to take effect" \
         "9 Raspi-Config Menu" "Raspberry Pi Configuration Menu" \
         3>&1 1>&2 2>&3)
@@ -2111,15 +2501,15 @@ if [ "$INTERACTIVE" = True ]; then
     elif [ $RET -eq 0 ]; then
       if is_pi ; then
         case "$FUN" in
-          1\ *) do_first_time_boot_menu ;;
-          2\ *) do_requirement_packages ;;
-          3\ *) do_torbox_programs ;;
-          4\ *) do_function ;;
-          5\ *) do_function ;;
-          6\ *) do_function ;;
-          7\ *) do_update && do_upgrade ;;
-          8\ *) do_reboot ;;
-          9\ *) do_raspi_config_menu ;;
+          1\ *) echo -e '\nFirst Time Boot activate\n'`date` >> /var/log/rpi-config_install.log && do_first_time_boot_menu ;;
+          2\ *) echo -e '\nRequirement Packages activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_requirement_packages ;;
+          3\ *) echo -e '\nTorBox Programs activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_directories && do_torbox_programs ;;
+          4\ *) echo -e '\nMaintenance Utilities activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_maintenance_programs ;;
+          5\ *) echo -e '\nPreassigned Settings activate\n'`date` >> /var/log/rpi-config_install.log && do_torbox_preassigned_settings ;;
+          6\ *) echo -e '\nFuture activate\n'`date` >> /var/log/rpi-config_install.log && do_future_settings ;;
+          7\ *) echo -e '\nUpdate\Upgrade activate\n'`date` >> /var/log/rpi-config_install.log && do_update && do_upgrade ;;
+          8\ *) echo -e '\nReboot RPi activate\n'`date` >> /var/log/rpi-config_install.log && do_reboot ;;
+          9\ *) echo -e '\nRaspi-Config Menu activate\n'`date` >> /var/log/rpi-config_install.log && do_raspi_config_menu ;;
           *) whiptail --msgbox "Programmer error: unrecognized option" 30 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 30 60 1
       else
