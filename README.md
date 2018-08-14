@@ -5,6 +5,7 @@
 ```
 sudo su -c "bash <(wget -qO- https://tinyurl.com/raspi-torbox)" root
 ```
+Latest revision:  08/14/2018
 
 ## To-Do After PreAssigned Settings
 - Open browser (Chrome or Firefox)
