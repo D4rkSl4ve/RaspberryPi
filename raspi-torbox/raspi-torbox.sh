@@ -2000,7 +2000,7 @@ EOF
 
   echo -e '\nStarting service:  Jackett' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Jackett \e[0m" &&
-  sudo systemctl enable jackett >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable jackett >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start jackett &&
   sudo systemctl status jackett >> /var/log/rpi-config_install.log &&
 
@@ -2042,7 +2042,7 @@ EOF
 
   echo -e '\nStarting service:  Sonarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Sonarr \e[0m" &&
-  sudo systemctl enable sonarr.service >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable sonarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start sonarr.service &&
   sudo systemctl status sonarr >> /var/log/rpi-config_install.log &&
 
@@ -2078,7 +2078,7 @@ EOF
 
   echo -e '\nStarting service:  Radarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Radarr \e[0m" &&
-  sudo systemctl enable radarr.service >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable radarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start radarr.service &&
   sudo systemctl status radarr >> /var/log/rpi-config_install.log &&
 
@@ -2113,7 +2113,7 @@ EOF
   do_with_root mv lidarr.service /lib/systemd/system/lidarr.service
   echo -e '\nStarting service:  Lidarr' >> /var/log/rpi-config_install.log &&
   echo -e "\e[0;96m> Starting service:\e[0;92m  Lidarr \e[0m" &&
-  sudo systemctl enable lidarr.service >> /var/log/rpi-config_install.log &&
+  sudo systemctl enable lidarr.service >> /var/log/rpi-config_install.log 2>&1 &&
   sudo systemctl start lidarr.service &&
   sudo systemctl status lidarr >> /var/log/rpi-config_install.log
 
