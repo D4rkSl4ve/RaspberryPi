@@ -2,7 +2,7 @@
 # Part of raspi-config https://github.com/RPi-Distro/raspi-config
 #
 # See LICENSE file for copyright and license details
-# Revised:  8/07/2018
+# Revised:  8/14/2018
 
 INTERACTIVE=True
 ASK_TO_REBOOT=0
